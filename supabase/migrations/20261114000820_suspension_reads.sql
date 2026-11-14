@@ -26,7 +26,7 @@ create or replace view public.experience_feed with (security_barrier = true) as
 select
   e.id,
   e.company_id, c.slug as company_slug, c.name as company_name, c.is_verified as company_verified,
-  e.role_title, e.opportunity_type, e.hiring_mode,
+  e.role_title, e.domain_id, e.opportunity_type, e.hiring_mode,
   case when e.hide_department and e.author_id is distinct from auth.uid() then null else e.department_id end as department_id,
   e.graduation_year, e.interview_month, e.difficulty, e.outcome, e.is_anonymous, e.status,
   case when e.author_id = auth.uid() or public.is_moderator() then e.hidden_reason end as hidden_reason,

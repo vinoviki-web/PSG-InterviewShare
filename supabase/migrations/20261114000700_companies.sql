@@ -76,7 +76,12 @@ begin
   if c.merged_into_id is not null then
     return jsonb_build_object('redirect', (select t.slug from public.companies t where t.id = c.merged_into_id));
   end if;
-  select to_jsonb(s) || jsonb_build_object('description', c.description, 'description_source', c.description_source)
+  select to_jsonb(s) || jsonb_build_object('description', c.description, 'description_source', c.description_source,
+    -- Which fields this company hires PSG students for (MD1), from visible posts only.
+    'domains', (select coalesce(jsonb_agg(jsonb_build_object('id', d.id, 'name', d.name, 'count', x.n) order by x.n desc, d.sort), '[]')
+                from (select f.domain_id, count(*) n from public.experience_feed f
+                      where f.company_id = c.id and f.status = 'published' and f.domain_id is not null group by 1) x
+                join public.domains d on d.id = x.domain_id))
     into v_out
   from public.company_stats() s where s.id = c.id;
   return v_out;

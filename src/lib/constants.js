@@ -1,5 +1,5 @@
 import {
-  MonitorCheck, Calculator, Code2, Cpu, Network, Users, Briefcase, HeartHandshake, CircleDot,
+  MonitorCheck, Calculator, Code2, Cpu, Network, Users, Briefcase, HeartHandshake, CircleDot, PenLine, Wrench,
 } from 'lucide-react'
 
 export const APP_NAME = 'PSG InterviewShare'
@@ -33,8 +33,10 @@ export const DIFFICULTY_LABELS = ['', 'Easy', 'Fair', 'Moderate', 'Hard', 'Very 
 export const ROUND_TYPES = [
   { value: 'online_assessment', label: 'Online assessment', short: 'OA', icon: MonitorCheck },
   { value: 'aptitude', label: 'Aptitude', short: 'APT', icon: Calculator },
+  { value: 'written_test', label: 'Written technical test', short: 'WRITTEN', icon: PenLine },
   { value: 'coding', label: 'Coding', short: 'CODE', icon: Code2 },
   { value: 'technical', label: 'Technical', short: 'TECH', icon: Cpu },
+  { value: 'practical', label: 'Practical / hands-on', short: 'LAB', icon: Wrench },
   { value: 'system_design', label: 'System design', short: 'SD', icon: Network },
   { value: 'group_discussion', label: 'Group discussion', short: 'GD', icon: Users },
   { value: 'managerial', label: 'Managerial', short: 'MGR', icon: Briefcase },
@@ -44,7 +46,9 @@ export const ROUND_TYPES = [
 
 export const QUESTION_KINDS = [
   { value: 'coding', label: 'Coding' },
-  { value: 'technical', label: 'Technical' },
+  { value: 'technical', label: 'Technical concept' },
+  { value: 'numerical', label: 'Numerical / calculation' },
+  { value: 'design', label: 'Design problem' },
   { value: 'hr', label: 'HR' },
   { value: 'behavioral', label: 'Behavioral' },
   { value: 'aptitude', label: 'Aptitude' },
@@ -59,9 +63,7 @@ export const RESOURCE_KINDS = [
   { value: 'other', label: 'Other' },
 ]
 
-export const TARGET_ROLES = [
-  'SDE', 'Data / ML', 'Core engineering', 'Product', 'Consulting', 'Finance / Quant', 'Design', 'Other',
-]
+/* Onboarding "What are you preparing for?" now uses DOMAINS (src/lib/taxonomy.js, MD3). */
 
 export const SORTS = [
   { value: 'latest', label: 'Latest' },

@@ -15,9 +15,9 @@ create type public.opportunity_type    as enum ('internship', 'full_time', 'inte
 create type public.hiring_mode         as enum ('on_campus', 'off_campus', 'referral', 'other');
 create type public.outcome             as enum ('selected', 'not_selected', 'awaiting', 'withdrew', 'undisclosed');
 create type public.experience_status   as enum ('draft', 'published', 'hidden', 'removed');
-create type public.round_type          as enum ('online_assessment', 'aptitude', 'coding', 'technical', 'system_design', 'group_discussion', 'managerial', 'hr', 'other');
+create type public.round_type          as enum ('online_assessment', 'aptitude', 'written_test', 'coding', 'technical', 'practical', 'system_design', 'group_discussion', 'managerial', 'hr', 'other');
 create type public.round_mode          as enum ('online', 'offline');
-create type public.question_kind       as enum ('coding', 'technical', 'hr', 'behavioral', 'aptitude', 'puzzle');
+create type public.question_kind       as enum ('coding', 'technical', 'numerical', 'design', 'hr', 'behavioral', 'aptitude', 'puzzle');
 create type public.resource_kind       as enum ('course', 'book', 'practice', 'video', 'other');
 create type public.comment_status      as enum ('visible', 'hidden', 'deleted', 'removed');
 create type public.report_target       as enum ('experience', 'comment', 'profile');
@@ -35,10 +35,20 @@ create table public.departments (
   is_active  boolean not null default true
 );
 
+-- The field of the ROLE (not the student's department): placements span
+-- every branch, and an EEE student can take a software job (DECISIONS MD1).
+create table public.domains (
+  id      text primary key check (id ~ '^[a-z0-9-]{2,20}$'),
+  name    text not null check (char_length(name) between 2 and 60),
+  covers  text check (char_length(covers) <= 120),
+  sort    smallint not null default 0
+);
+
 create table public.topics (
   id          text primary key check (id ~ '^[a-z0-9-]{2,40}$'),
   name        text not null check (char_length(name) between 2 and 60),
   group_name  text not null check (char_length(group_name) between 2 and 60),
+  domain_id   text references public.domains (id),   -- null: useful in every domain (aptitude, general)
   sort        smallint not null default 0
 );
 
@@ -115,6 +125,7 @@ create table public.experiences (
   company_id          uuid references public.companies (id),
   new_company_name    text check (char_length(trim(new_company_name)) between 2 and 120),
   role_title          text check (char_length(trim(role_title)) between 2 and 100),
+  domain_id           text references public.domains (id),
   opportunity_type    public.opportunity_type,
   hiring_mode         public.hiring_mode,
   department_id       text references public.departments (id),
@@ -148,7 +159,7 @@ create table public.experiences (
   -- with friendly errors; the constraint is the backstop.
   constraint non_draft_is_complete check (
     status = 'draft' or (
-      company_id is not null and role_title is not null and opportunity_type is not null and hiring_mode is not null
+      company_id is not null and role_title is not null and domain_id is not null and opportunity_type is not null and hiring_mode is not null
       and department_id is not null and graduation_year is not null and interview_month is not null
       and difficulty is not null and outcome is not null and published_at is not null and confirmed_own
     )
@@ -161,6 +172,8 @@ create index experiences_helpful_idx on public.experiences (helpful_count desc, 
 create index experiences_company_idx on public.experiences (company_id, published_at desc);
 create index experiences_author_idx on public.experiences (author_id, status);
 create index experiences_dept_year_idx on public.experiences (department_id, graduation_year) where status = 'published';
+create index experiences_domain_idx on public.experiences (domain_id, published_at desc) where status = 'published';
+create index topics_domain_idx on public.topics (domain_id);
 create index experiences_search_idx on public.experiences using gin (search_vector);
 -- One experience per author per drive, unless they explain why (spec §9.9)
 create unique index experiences_no_duplicate_drive on public.experiences (author_id, company_id, lower(role_title), opportunity_type, graduation_year)

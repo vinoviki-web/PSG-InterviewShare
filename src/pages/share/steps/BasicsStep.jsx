@@ -5,6 +5,8 @@ import { BadgeCheck } from 'lucide-react'
 import { Combobox, CompanyLogo, Input, CharCount, RadioCards, Segmented, MonthYearPicker, Select } from '@/components/ui'
 import { getRoleSuggestions, LIMITS } from '@/api/drafts'
 import { OPPORTUNITY_TYPES, HIRING_MODES } from '@/lib/constants'
+import { DOMAIN } from '@/lib/taxonomy'
+import { DomainPicker } from '@/components/DomainPicker'
 import { departmentOptions } from '@/mocks/lookups'
 import { pluralize } from '@/lib/utils'
 import { CField, FormSection } from '../parts'
@@ -25,6 +27,7 @@ export function BasicsStep({ companies, config }) {
   const { setValue } = useFormContext()
   const company = useWatch({ name: 'company' })
   const role = useWatch({ name: 'role_title' })
+  const domain = useWatch({ name: 'domain_id' })
   const slug = company && !company.is_new ? company.slug : null
 
   const { data: roleSuggestions = [] } = useQuery({
@@ -91,7 +94,7 @@ export function BasicsStep({ companies, config }) {
             name="role_title"
             label="Role title"
             counter={(v) => <CharCount value={v} max={LIMITS.role_title[1]} />}
-            render={(field) => <Input {...field} placeholder="e.g. SDE Intern" autoComplete="off" maxLength={LIMITS.role_title[1] + 20} />}
+            render={(field) => <Input {...field} placeholder={DOMAIN[domain]?.roleExample ?? 'Use the title from the job post'} autoComplete="off" maxLength={LIMITS.role_title[1] + 20} />}
           />
           {suggestions.length > 0 && (
             <div className="flex flex-wrap items-center gap-1.5 animate-fade-in">
@@ -109,6 +112,15 @@ export function BasicsStep({ companies, config }) {
             </div>
           )}
         </div>
+
+        <CField
+          name="domain_id"
+          label="Domain"
+          hint="The field of the role, not your department. An EEE student taking a software job picks Software & IT."
+          render={(field) => (
+            <DomainPicker ref={field.ref} value={field.value} onValueChange={field.onChange} aria-label="Domain" />
+          )}
+        />
       </FormSection>
 
       <FormSection title="Opportunity">

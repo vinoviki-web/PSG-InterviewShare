@@ -3,10 +3,11 @@ import { Checkbox } from '@/components/ui/Controls'
 import { Chip, Combobox, Select } from '@/components/ui'
 import { OPPORTUNITY_TYPES, HIRING_MODES, OUTCOMES, ROUND_TYPES, DIFFICULTY_LABELS } from '@/lib/constants'
 import { DEPARTMENTS, DEPARTMENT } from '@/mocks/lookups'
+import { DOMAINS, DOMAIN } from '@/lib/taxonomy'
 import { batchLabel, cn } from '@/lib/utils'
 
 /** Filter config shared by the rail (≥ lg) and the bottom sheet (< lg). */
-export const FILTER_KEYS = ['company', 'type', 'hiring', 'outcome', 'difficulty', 'dept', 'year', 'round']
+export const FILTER_KEYS = ['domain', 'company', 'type', 'hiring', 'outcome', 'difficulty', 'dept', 'year', 'round']
 
 export const readFilters = (sp) => Object.fromEntries(FILTER_KEYS.map((k) => [k, sp.get(k)?.split(',').filter(Boolean) ?? []]))
 
@@ -117,7 +118,7 @@ export function FilterPanel({ filters, onToggle, onSet, companies = [], facets }
       </Group>
       <Group title="Includes a round">
         <div className="flex flex-wrap gap-1.5">
-          {ROUND_TYPES.filter((r) => ['system_design', 'group_discussion', 'managerial', 'aptitude', 'coding'].includes(r.value)).map((r) => (
+          {ROUND_TYPES.filter((r) => ['written_test', 'practical', 'coding', 'aptitude', 'group_discussion', 'system_design', 'managerial'].includes(r.value)).map((r) => (
             <Chip key={r.value} selected={filters.round.includes(r.value)} onClick={() => onToggle('round', r.value)}>{r.label}</Chip>
           ))}
         </div>
@@ -126,9 +127,31 @@ export function FilterPanel({ filters, onToggle, onSet, companies = [], facets }
   )
 }
 
+/**
+ * The domain bar above the results (MD1): one tap to see a field across every
+ * company. Shows domains that have experiences (plus any already selected).
+ * Scrolls sideways on phones instead of wrapping into many rows.
+ */
+export function DomainBar({ selected, onToggle, onClear, facets }) {
+  const shown = DOMAINS.filter((d) => !facets || facets[d.value] > 0 || selected.includes(d.value))
+  return (
+    <div role="group" aria-label="Filter by domain" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+      <Chip selected={!selected.length} onClick={onClear}>All domains</Chip>
+      {shown.map((d) => (
+        <Chip key={d.value} selected={selected.includes(d.value)} onClick={() => onToggle('domain', d.value)} className="shrink-0">
+          <d.icon className="size-3.5" aria-hidden />
+          {d.short}
+          {facets?.[d.value] != null && <span className="tabular font-normal text-ink-600">{facets[d.value]}</span>}
+        </Chip>
+      ))}
+    </div>
+  )
+}
+
 /** Human labels for active-filter chips. */
 export function chipLabel(key, value, companies) {
   switch (key) {
+    case 'domain': return DOMAIN[value]?.label ?? value
     case 'company': return companies.find((c) => c.slug === value)?.name ?? value
     case 'type': return OPPORTUNITY_TYPES.find((o) => o.value === value)?.label
     case 'hiring': return HIRING_MODES.find((o) => o.value === value)?.label

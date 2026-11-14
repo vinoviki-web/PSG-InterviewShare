@@ -18,7 +18,7 @@ const call = async (c, fn, args) => {
 }
 
 async function publish(extra = {}) {
-  const p = { company_slug: 'walmart-global-tech', role_title: `Software Engineer Intern ${Math.random().toString(36).slice(2, 6)}`, opportunity_type: 'internship', hiring_mode: 'on_campus',
+  const p = { company_slug: 'walmart-global-tech', role_title: `Software Engineer Intern ${Math.random().toString(36).slice(2, 6)}`, domain_id: 'software', opportunity_type: 'internship', hiring_mode: 'on_campus',
     interview_month: '2025-07-01', department_id: 'cse', graduation_year: 2027, difficulty: 3, outcome: 'selected', confirmed: true,
     rounds: [{ round_type: 'technical', description: 'Graph problem with follow-ups and a short project discussion.', questions: [] }], topics: [], resources: [], ...extra }
   const { data } = await author.rpc('save_draft', { p })

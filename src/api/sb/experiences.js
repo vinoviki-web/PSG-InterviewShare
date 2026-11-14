@@ -8,6 +8,7 @@ import { ApiError } from '../client'
 import { unwrap, fromPostgrest } from './errors'
 import { getLookups, feedRowToExperience, FEED_COLUMNS } from './mappers'
 import { readingMinutes } from '@/lib/utils'
+import { DOMAIN } from '@/lib/taxonomy'
 
 const arr = (v) => (v == null || v === '' ? [] : Array.isArray(v) ? v : String(v).split(',')).filter(Boolean)
 
@@ -18,7 +19,7 @@ async function currentUserId() {
 }
 
 /**
- * params: { q, company[], type[], hiring[], outcome[], difficulty[], dept[], year[], round[], sort, cursor, limit, exclude }
+ * params: { q, domain[], company[], type[], hiring[], outcome[], difficulty[], dept[], year[], round[], sort, cursor, limit, exclude }
  * returns { items, total, nextCursor }
  */
 export async function searchExperiences(params = {}) {
@@ -27,6 +28,7 @@ export async function searchExperiences(params = {}) {
   const offset = Math.max(Number(params.cursor ?? 0), 0)
   let qb = supabase.rpc('search_feed', { p_q: params.q?.trim() || null }, { count: 'exact' }).select(FEED_COLUMNS).eq('status', 'published')
 
+  const domain = arr(params.domain)
   const company = arr(params.company)
   const type = arr(params.type)
   const hiring = arr(params.hiring)
@@ -35,6 +37,7 @@ export async function searchExperiences(params = {}) {
   const dept = arr(params.dept)
   const year = arr(params.year).map(Number)
   const round = arr(params.round)
+  if (domain.length) qb = qb.in('domain_id', domain)
   if (company.length) qb = qb.in('company_slug', company)
   if (type.length) qb = qb.in('opportunity_type', type)
   if (hiring.length) qb = qb.in('hiring_mode', hiring)
@@ -68,6 +71,7 @@ export async function getExperience(id) {
   const questions = e.rounds.flatMap((r) => r.questions)
   return {
     ...e,
+    domain: DOMAIN[e.domain?.id] ?? null,
     pipeline: e.rounds.map((r) => ({ type: r.round_type, mode: r.mode, difficulty: r.difficulty })),
     question_count: questions.length,
     reading_minutes: readingMinutes(e.application_process ?? '', e.preparation ?? '', e.advice ?? '', ...e.rounds.map((r) => r.description ?? ''), ...questions.map((q) => q.body)),

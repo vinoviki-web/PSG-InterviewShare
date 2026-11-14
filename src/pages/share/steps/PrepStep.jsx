@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react'
 import { useFieldArray, useFormContext, useFormState, useWatch } from 'react-hook-form'
 import { Plus, Trash2, Link2 } from 'lucide-react'
 import { Button, IconButton, Input, Textarea, CharCount, Select, TagPicker } from '@/components/ui'
-import { TOPICS } from '@/mocks/lookups'
+import { topicsForDomain } from '@/lib/taxonomy'
 import { RESOURCE_KINDS } from '@/lib/constants'
 import { LIMITS } from '@/api/drafts'
 import { CField, FormSection, InlineError, fieldId } from '../parts'
@@ -13,6 +13,7 @@ const PROMPTS = ['How long did you prepare?', 'What did you focus on?', 'What wo
 export function PrepStep({ announce }) {
   const { setValue, getValues } = useFormContext()
   const rounds = useWatch({ name: 'rounds' })
+  const domain = useWatch({ name: 'domain_id' })
   const strategyRef = useRef(null)
 
   // Topics already tagged on questions, most frequent first.
@@ -42,7 +43,7 @@ export function PrepStep({ announce }) {
           label="Topics covered"
           hint={`Pick what the interviews actually tested. Up to ${LIMITS.topics}.`}
           render={(field) => (
-            <TagPicker ref={field.ref} options={TOPICS} value={field.value} onChange={field.onChange} max={LIMITS.topics} suggestions={suggestions} placeholder="Search topics, e.g. Graphs" />
+            <TagPicker ref={field.ref} options={topicsForDomain(domain)} value={field.value} onChange={field.onChange} max={LIMITS.topics} suggestions={suggestions} placeholder="Search topics, e.g. Power systems or Graphs" />
           )}
         />
         <div className="space-y-2.5">
@@ -111,7 +112,7 @@ function ResourceList({ announce }) {
           {fields.map((f, i) => (
             <li key={f._key} className="rounded-md border border-ink-200 bg-ink-25 p-3 animate-rise">
               <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_150px_auto] md:items-start">
-                <CField name={`resources.${i}.title`} label="Title" render={(field) => <Input {...field} placeholder="e.g. Striver’s SDE sheet" />} />
+                <CField name={`resources.${i}.title`} label="Title" render={(field) => <Input {...field} placeholder="e.g. NPTEL course or a practice site" />} />
                 <CField
                   name={`resources.${i}.url`}
                   label="Link"

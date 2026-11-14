@@ -21,6 +21,29 @@ test('explore → search → read an experience', async ({ page }) => {
   await expectAccessible(page, 'experience detail')
 })
 
+test('explore can be narrowed to one domain', async ({ page }) => {
+  await page.goto('/experiences')
+  await page.getByRole('group', { name: 'Filter by domain' }).getByRole('button', { name: /Electrical/ }).click()
+  await expect(page).toHaveURL(/domain=electrical/)
+  const cards = page.locator('main article')
+  await expect(cards.first()).toBeVisible()
+  // The previous (unfiltered) page stays on screen until the new results arrive
+  await expect.poll(() => cards.filter({ hasNot: page.getByText('Electrical', { exact: true }) }).count(), { timeout: 10_000 }).toBe(0)
+  await expectAccessible(page, 'explore (electrical)')
+})
+
+test('the share form asks for the domain and adapts its examples', async ({ page }) => {
+  await page.goto('/share')
+  const fresh = page.getByRole('button', { name: /start (a )?new|new experience/i })
+  if (await fresh.first().isVisible().catch(() => false)) await fresh.first().click()
+  const domain = page.getByRole('radiogroup', { name: 'Domain' })
+  await expect(domain.getByRole('radio')).toHaveCount(13)
+  await domain.getByRole('radio', { name: /Electrical/ }).click()
+  await expect(page.locator('p[aria-live]').getByText('Machines, power systems, power electronics, EV')).toBeVisible()
+  await expect(page.getByLabel('Role title')).toHaveAttribute('placeholder', 'e.g. Graduate Engineer Trainee')
+  await expectAccessible(page, 'share basics (domain chosen)')
+})
+
 test('companies directory and a company page', async ({ page }) => {
   await page.goto('/companies')
   await expect(page.getByRole('heading', { name: 'Companies' })).toBeVisible()

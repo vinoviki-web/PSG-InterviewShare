@@ -16,6 +16,7 @@
 
 -- ------------------------------------------------------------ RLS on
 alter table public.departments          enable row level security;
+alter table public.domains              enable row level security;
 alter table public.topics               enable row level security;
 alter table public.profiles             enable row level security;
 alter table public.user_roles           enable row level security;
@@ -54,6 +55,12 @@ grant select on public.departments, public.topics to authenticated;
 grant insert, update, delete on public.departments, public.topics to authenticated;
 create policy "psg read departments" on public.departments for select to authenticated using (public.is_psg_user());
 create policy "admin write departments" on public.departments for all to authenticated using (public.is_admin()) with check (public.is_admin());
+-- Domains (MD1): read by every PSG student, written only by admins.
+grant select, insert, update, delete on public.domains to authenticated;
+create policy "psg read domains" on public.domains for select to authenticated using ((select public.is_psg_user()));
+create policy "admin insert domains" on public.domains for insert to authenticated with check ((select public.is_admin()));
+create policy "admin update domains" on public.domains for update to authenticated using ((select public.is_admin())) with check ((select public.is_admin()));
+create policy "admin delete domains" on public.domains for delete to authenticated using ((select public.is_admin()));
 create policy "psg read topics" on public.topics for select to authenticated using (public.is_psg_user());
 create policy "admin write topics" on public.topics for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
@@ -141,7 +148,7 @@ create view public.experience_feed with (security_barrier = true) as
 select
   e.id,
   e.company_id, c.slug as company_slug, c.name as company_name, c.is_verified as company_verified,
-  e.role_title, e.opportunity_type, e.hiring_mode,
+  e.role_title, e.domain_id, e.opportunity_type, e.hiring_mode,
   case when e.hide_department and e.author_id is distinct from auth.uid() then null else e.department_id end as department_id,
   e.graduation_year, e.interview_month, e.difficulty, e.outcome, e.is_anonymous, e.status,
   case when e.author_id = auth.uid() or public.is_moderator() then e.hidden_reason end as hidden_reason,

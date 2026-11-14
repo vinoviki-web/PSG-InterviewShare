@@ -37,22 +37,5 @@ export const departmentOptions = () => {
   return Object.entries(groups).map(([label, options]) => ({ label, options }))
 }
 
-export const TOPIC_GROUPS = {
-  'Data structures & algorithms': [
-    'Arrays', 'Strings', 'Linked lists', 'Stacks & queues', 'Trees', 'Graphs', 'Dynamic programming', 'Greedy',
-    'Recursion & backtracking', 'Sorting & searching', 'Hashing', 'Heaps', 'Bit manipulation', 'Sliding window', 'Two pointers',
-  ],
-  'CS fundamentals': ['Operating systems', 'DBMS', 'SQL', 'Computer networks', 'OOP', 'System design', 'Low-level design'],
-  Languages: ['Java', 'Python', 'C / C++', 'JavaScript'],
-  Aptitude: ['Quantitative aptitude', 'Logical reasoning', 'Verbal ability'],
-  Core: ['Digital electronics', 'Analog circuits', 'Embedded C', 'Control systems', 'Thermodynamics', 'Strength of materials', 'Machine design', 'Manufacturing processes'],
-  Other: ['Puzzles', 'Projects & resume', 'Behavioral', 'Cloud & DevOps', 'Machine learning', 'Statistics', 'Finance basics', 'Guesstimates'],
-}
-
-const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-
-export const TOPICS = Object.entries(TOPIC_GROUPS).flatMap(([group, names]) =>
-  names.map((name) => ({ value: slug(name), label: name, group })),
-)
-export const TOPIC = Object.fromEntries(TOPICS.map((t) => [t.value, t]))
-export const topicSlug = slug
+// Topics live in src/lib/taxonomy.js (shared with the database, DECISIONS MD2).
+export { TOPIC_GROUPS, TOPICS, TOPIC, topicSlug } from '../lib/taxonomy.js'

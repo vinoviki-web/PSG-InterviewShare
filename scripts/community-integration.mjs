@@ -18,7 +18,7 @@ const COLS = 'id, parent_id, body, status, is_owner, is_experience_author, autho
 
 async function publish(client, extra = {}) {
   const p = {
-    company_slug: 'cisco', role_title: `Software Engineer Intern ${Math.random().toString(36).slice(2, 6)}`, opportunity_type: 'internship', hiring_mode: 'on_campus',
+    company_slug: 'cisco', role_title: `Software Engineer Intern ${Math.random().toString(36).slice(2, 6)}`, domain_id: 'software', opportunity_type: 'internship', hiring_mode: 'on_campus',
     interview_month: '2025-07-01', department_id: 'cse', graduation_year: 2027, difficulty: 3, outcome: 'selected', confirmed: true,
     rounds: [{ round_type: 'technical', description: 'Networking fundamentals and one linked-list problem with follow-ups.', questions: [] }],
     topics: [], resources: [], ...extra,

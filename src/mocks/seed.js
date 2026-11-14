@@ -27,8 +27,8 @@ export const iso = (msAgo) => new Date(NOW - msAgo).toISOString()
 /* ---------------- Users ---------------- */
 export const DEMO_USERS = {
   newbie: { id: 'u-newbie', email: '23z118@psgtech.ac.in', full_name: 'Nithya Senthil', onboarded_at: null, department_id: null, graduation_year: null },
-  student: { id: 'u-student', email: '22z201@psgtech.ac.in', full_name: 'Arjun Prakash', handle: 'arjun-p', department_id: 'cse', graduation_year: 2027, onboarded_at: iso(200 * DAY), bio: 'Pre-final year, preparing for SDE roles. Into backend and distributed systems.', interests: ['SDE'], topics: [t('Graphs'), t('System design')] },
-  moderator: { id: 'u-mod', email: '21z235@psgtech.ac.in', full_name: 'Meera Krishnan', handle: 'meera-k', department_id: 'cse', graduation_year: 2026, onboarded_at: iso(400 * DAY), bio: 'Placement rep, CSE ’26.', interests: ['SDE', 'Product'], topics: [] },
+  student: { id: 'u-student', email: '22z201@psgtech.ac.in', full_name: 'Arjun Prakash', handle: 'arjun-p', department_id: 'cse', graduation_year: 2027, onboarded_at: iso(200 * DAY), bio: 'Pre-final year, preparing for SDE roles. Into backend and distributed systems.', interests: ['software'], topics: [t('Graphs'), t('System design')] },
+  moderator: { id: 'u-mod', email: '21z235@psgtech.ac.in', full_name: 'Meera Krishnan', handle: 'meera-k', department_id: 'cse', graduation_year: 2026, onboarded_at: iso(400 * DAY), bio: 'Placement rep, CSE ’26.', interests: ['software', 'business'], topics: [] },
   admin: { id: 'u-admin', email: '22e646@psgtech.ac.in', full_name: 'Platform Admin', handle: 'admin', department_id: 'eee', graduation_year: 2026, onboarded_at: iso(420 * DAY), bio: '', interests: [], topics: [] },
 }
 
@@ -90,21 +90,21 @@ export const COMPANY_PROFILES = [
   { ...C('Microsoft', 'Software', 'careers.microsoft.com', 'Technology company building operating systems, productivity software and cloud services.'),
     roles: ['Software Engineer Intern', 'Software Engineer'], pipelines: [['online_assessment', 'technical', 'technical', 'managerial']], focus: ['Linked lists', 'Trees', 'Dynamic programming', 'OOP', 'Projects & resume', 'Low-level design'], types: ['internship', 'intern_ppo', 'full_time'] },
   { ...C('Bosch Global Software Technologies', 'Automotive & Embedded', 'bosch-softwaretechnologies.com', 'Engineering and IT services arm of Bosch, with large teams in Coimbatore and Bengaluru.', { aliases: ['Bosch', 'BGSW', 'RBEI'] }),
-    roles: ['Associate Software Engineer', 'Embedded Software Engineer'], pipelines: [['online_assessment', 'technical', 'hr']], focus: ['C / C++', 'Embedded C', 'Operating systems', 'Digital electronics', 'OOP'], types: ['full_time'] },
+    roles: ['Associate Software Engineer', 'Embedded Software Engineer'], pipelines: [['online_assessment', 'technical', 'hr']], focus: ['C / C++', 'Embedded C', 'Operating systems', 'Digital electronics', 'OOP'], types: ['full_time'], domain: 'software', roleDomain: (role) => (/embedded/i.test(role) ? 'electronics' : 'software') },
   { ...C('Freshworks', 'Software', 'freshworks.com', 'SaaS company building customer and employee engagement software, with major engineering in Chennai.'),
     roles: ['Software Engineer', 'Software Engineer Intern'], pipelines: [['coding', 'technical', 'system_design', 'hr'], ['coding', 'technical', 'hr']], focus: ['Arrays', 'Hashing', 'System design', 'JavaScript', 'SQL', 'Projects & resume'], types: ['full_time', 'internship'] },
   { ...C('PayPal', 'Fintech', 'paypal.com/careers', 'Digital payments company with a large technology centre in Chennai.'),
     roles: ['Software Engineer Intern', 'Software Engineer 1'], pipelines: [['online_assessment', 'technical', 'technical', 'hr']], focus: ['Graphs', 'Dynamic programming', 'DBMS', 'Computer networks', 'Java'], types: ['internship', 'intern_ppo'] },
   { ...C('Texas Instruments', 'Semiconductors', 'careers.ti.com', 'Semiconductor company designing analog and embedded processing chips.', { aliases: ['TI'] }),
-    roles: ['Analog Design Engineer', 'Digital Design Intern'], pipelines: [['aptitude', 'technical', 'technical', 'hr']], focus: ['Analog circuits', 'Digital electronics', 'Control systems', 'Quantitative aptitude'], types: ['internship', 'full_time'] },
+    roles: ['Analog Design Engineer', 'Digital Design Intern'], pipelines: [['aptitude', 'technical', 'technical', 'hr']], focus: ['Analog circuits', 'Digital electronics', 'Control systems', 'Quantitative aptitude'], types: ['internship', 'full_time'], domain: 'electronics' },
   { ...C('Caterpillar', 'Heavy machinery', 'caterpillar.com/careers', 'Manufacturer of construction and mining equipment, engines and turbines, with an engineering centre in Chennai.'),
-    roles: ['Graduate Engineer Trainee', 'Design Engineer'], pipelines: [['aptitude', 'technical', 'hr']], focus: ['Strength of materials', 'Machine design', 'Thermodynamics', 'Manufacturing processes'], types: ['full_time'] },
+    roles: ['Graduate Engineer Trainee', 'Design Engineer'], pipelines: [['aptitude', 'technical', 'hr']], focus: ['Strength of materials', 'Machine design', 'Thermodynamics', 'Manufacturing processes'], types: ['full_time'], domain: 'mechanical' },
   { ...C('Tata Consultancy Services', 'IT services', 'tcs.com/careers', 'IT services and consulting company. Hires at scale through national tests and campus drives.', { aliases: ['TCS', 'TCS Digital', 'TCS Ninja'] }),
     roles: ['Digital', 'Ninja', 'Prime'], pipelines: [['aptitude', 'technical', 'managerial', 'hr'], ['aptitude', 'technical', 'hr']], focus: ['Quantitative aptitude', 'Logical reasoning', 'OOP', 'DBMS', 'Projects & resume'], types: ['full_time'] },
   { ...C('Goldman Sachs', 'Finance', 'goldmansachs.com/careers', 'Investment bank whose engineering division builds trading, risk and platform systems.'),
     roles: ['Summer Analyst', 'Analyst, Engineering'], pipelines: [['online_assessment', 'technical', 'technical', 'technical', 'hr']], focus: ['Dynamic programming', 'Arrays', 'Statistics', 'Puzzles', 'Finance basics'], types: ['internship', 'intern_ppo'] },
   { ...C('Deloitte', 'Consulting', 'deloitte.com/careers', 'Professional services firm. Campus roles include analyst and consulting tracks.'),
-    roles: ['Analyst', 'Business Technology Analyst'], pipelines: [['aptitude', 'group_discussion', 'technical', 'hr']], focus: ['Verbal ability', 'Guesstimates', 'SQL', 'Behavioral'], types: ['full_time'] },
+    roles: ['Analyst', 'Business Technology Analyst'], pipelines: [['aptitude', 'group_discussion', 'technical', 'hr']], focus: ['Verbal ability', 'Guesstimates', 'SQL', 'Behavioral'], types: ['full_time'], domain: 'business' },
   { ...C('Cisco', 'Networking', 'jobs.cisco.com', 'Networking and security company. Campus roles span software and hardware engineering.'),
     roles: ['Software Engineer Intern', 'Technical Undergrad Intern'], pipelines: [['online_assessment', 'technical', 'technical', 'managerial']], focus: ['Computer networks', 'Operating systems', 'C / C++', 'Linked lists', 'Bit manipulation'], types: ['internship', 'intern_fte'] },
   { ...C('Walmart Global Tech', 'Retail technology', 'careers.walmart.com', 'Technology organisation behind Walmart’s retail, supply-chain and e-commerce platforms.'),
@@ -112,7 +112,7 @@ export const COMPANY_PROFILES = [
   { ...C('Oracle', 'Software', 'oracle.com/careers', 'Enterprise software company known for databases and cloud infrastructure.'),
     roles: ['Member of Technical Staff', 'Applications Engineer'], pipelines: [['online_assessment', 'technical', 'technical', 'hr']], focus: ['DBMS', 'SQL', 'Operating systems', 'Java', 'Trees'], types: ['full_time'] },
   { ...C('L&T Technology Services', 'Engineering services', 'ltts.com/careers', 'Engineering R&D services company working across mobility, industrial and medical domains.', { aliases: ['LTTS'] }),
-    roles: ['Graduate Engineer Trainee'], pipelines: [['aptitude', 'technical', 'hr']], focus: ['Embedded C', 'Digital electronics', 'Machine design', 'Quantitative aptitude'], types: ['full_time'] },
+    roles: ['Graduate Engineer Trainee'], pipelines: [['aptitude', 'technical', 'hr']], focus: ['Embedded C', 'Digital electronics', 'Machine design', 'Quantitative aptitude'], types: ['full_time'], domain: 'electronics' },
   { ...C('Chargebee', 'Software', 'chargebee.com/careers', 'Subscription billing and revenue management SaaS company based in Chennai.'),
     roles: ['Software Engineer'], pipelines: [['coding', 'technical', 'technical', 'hr']], focus: ['Low-level design', 'Java', 'SQL', 'Hashing'], types: ['full_time'] },
   { ...C('Kissflow', 'Software', 'kissflow.com', 'Low-code workflow platform company headquartered in Chennai.', { is_verified: false, description: null, description_source: null }),
@@ -163,6 +163,48 @@ export const QUESTION_POOL = {
   Statistics: [Q('Explain the central limit theorem in plain words.', 'technical', ['Statistics'])],
   'Finance basics': [Q('What is the time value of money? Explain NPV.', 'technical', ['Finance basics'])],
   Guesstimates: [Q('Estimate the number of two-wheelers sold in Coimbatore every month.', 'technical', ['Guesstimates'])],
+  /* Core branches (MD1): standard textbook-style questions, invented for the demo */
+  'Electrical machines': [Q('Why is a transformer rated in kVA and not kW?', 'technical', ['Electrical machines']), Q('A 4-pole, 50 Hz induction motor runs at 1440 rpm. Find the slip and explain why it can never reach synchronous speed.', 'numerical', ['Electrical machines'])],
+  'Power systems': [Q('What is the Ferranti effect and when does it occur?', 'technical', ['Power systems']), Q('Compare the fault current for a line-to-ground fault and a three-phase fault using per-unit values.', 'numerical', ['Power systems'])],
+  'Power electronics': [Q('Sketch the output of a single-phase fully controlled rectifier at a 60° firing angle.', 'technical', ['Power electronics']), Q('Design a buck converter from 24 V to 5 V at 2 A. How did you choose the inductor?', 'design', ['Power electronics'])],
+  'Switchgear & protection': [Q('How does a differential relay protect a transformer?', 'technical', ['Switchgear & protection'])],
+  'Circuit theory': [Q('Find the Thevenin equivalent of a bridge network drawn on the board.', 'numerical', ['Circuit theory'])],
+  'Electric drives': [Q('How does a VFD control induction motor speed, and why keep V/f constant?', 'technical', ['Electric drives'])],
+  'Renewable energy': [Q('Explain MPPT in a solar inverter.', 'technical', ['Renewable energy', 'Power electronics'])],
+  'Electrical measurements': [Q('How do you measure three-phase power with two wattmeters?', 'technical', ['Electrical measurements'])],
+  'VLSI design': [Q('Explain the CMOS inverter transfer characteristic and the effect of transistor sizing.', 'technical', ['VLSI design']), Q('What is clock skew and how is it handled in static timing analysis?', 'technical', ['VLSI design', 'Digital electronics'])],
+  'Verilog / VHDL': [Q('Write Verilog for a 4-bit up/down counter with synchronous reset.', 'coding', ['Verilog / VHDL', 'Digital electronics']), Q('Blocking vs non-blocking assignments: when does it matter?', 'technical', ['Verilog / VHDL'])],
+  'Signals & systems': [Q('A signal is band-limited to 4 kHz. What is the Nyquist rate, and what happens if you sample below it?', 'numerical', ['Signals & systems'])],
+  'Process control': [Q('Explain cascade control using a heat-exchanger example.', 'technical', ['Process control', 'Control systems'])],
+  'Sensors & transducers': [Q('RTD or thermocouple for 0–150 °C? Explain your choice.', 'technical', ['Sensors & transducers'])],
+  'Industrial instrumentation': [Q('How does a differential-pressure flow meter work, and what causes measurement errors?', 'technical', ['Industrial instrumentation'])],
+  'PLC & SCADA': [Q('Write ladder logic for a motor start/stop circuit with an overload interlock.', 'design', ['PLC & SCADA']), Q('What does SCADA do that a PLC alone doesn’t?', 'technical', ['PLC & SCADA'])],
+  'Robot kinematics': [Q('Derive the end-effector position of a 2-link planar arm. Then explain inverse kinematics.', 'numerical', ['Robot kinematics'])],
+  'Motion control': [Q('Stepper or servo motor for a pick-and-place arm? Justify it.', 'technical', ['Motion control'])],
+  'Hydraulics & pneumatics': [Q('Draw a pneumatic circuit for a double-acting cylinder with speed control.', 'design', ['Hydraulics & pneumatics'])],
+  'IC engines': [Q('Why do diesel engines use a higher compression ratio than petrol engines?', 'technical', ['IC engines', 'Thermodynamics'])],
+  'Automobile engineering': [Q('How does a differential work, and why does a car need one?', 'technical', ['Automobile engineering'])],
+  'GD&T': [Q('What does a position tolerance at MMC on a hole mean? Sketch the feature control frame.', 'technical', ['GD&T'])],
+  'Fluid mechanics': [Q('State Bernoulli’s equation and its assumptions. Where does it fail?', 'technical', ['Fluid mechanics'])],
+  'Heat transfer': [Q('Why add fins to a heat exchanger, and when do they stop helping?', 'technical', ['Heat transfer'])],
+  'Structural analysis': [Q('Find the reactions and maximum bending moment for a simply supported beam with a UDL over half the span.', 'numerical', ['Structural analysis'])],
+  'RCC & steel design': [Q('Why is minimum reinforcement specified in a slab? Explain limit-state design.', 'technical', ['RCC & steel design'])],
+  'Geotechnical engineering': [Q('From a soil report, how do you decide between a shallow and a pile foundation?', 'technical', ['Geotechnical engineering'])],
+  'Construction management': [Q('Explain CPM and find the critical path for a small site schedule.', 'numerical', ['Construction management'])],
+  Surveying: [Q('What can a total station do that a theodolite can’t?', 'technical', ['Surveying'])],
+  'Physical metallurgy': [Q('Walk through the iron–carbon diagram and the eutectoid reaction.', 'technical', ['Physical metallurgy'])],
+  'Heat treatment': [Q('Annealing, normalising, hardening and tempering: what does each do to the microstructure?', 'technical', ['Heat treatment'])],
+  'Material testing': [Q('Read the yield strength off a stress–strain curve and explain the 0.2% offset method.', 'technical', ['Material testing'])],
+  Welding: [Q('What causes porosity in a weld, and how do you prevent it?', 'technical', ['Welding'])],
+  'Biomedical instrumentation': [Q('How does an ECG amplifier reject common-mode noise?', 'technical', ['Biomedical instrumentation', 'Analog circuits'])],
+  'Medical imaging': [Q('Compare CT and MRI: principle, safety, and when each is preferred.', 'technical', ['Medical imaging'])],
+  'Yarn & fabric manufacturing': [Q('Ring spinning vs rotor spinning: differences in yarn quality and cost.', 'technical', ['Yarn & fabric manufacturing'])],
+  'Textile chemistry & dyeing': [Q('Why are reactive dyes used for cotton, and what affects colour fastness?', 'technical', ['Textile chemistry & dyeing'])],
+  'Textile testing': [Q('What does tex mean? Convert a 30s Ne cotton count to tex.', 'numerical', ['Textile testing'])],
+  Probability: [Q('Two dice are thrown. What is the probability that the sum is prime?', 'numerical', ['Probability'])],
+  'Data analysis': [Q('Sales data has missing values and outliers. How would you clean it before analysis?', 'technical', ['Data analysis'])],
+  'Case interviews': [Q('A client’s profit fell 20% this year. How would you structure the problem?', 'technical', ['Case interviews'])],
+  'Excel & BI tools': [Q('VLOOKUP vs INDEX-MATCH, and when is a pivot table the better tool?', 'technical', ['Excel & BI tools'])],
 }
 const HR_QUESTIONS = [
   Q('Tell me about yourself.', 'hr', ['Behavioral']),
@@ -199,6 +241,14 @@ const ROUND_TEXT = {
     'Short HR conversation: background, relocation, notice about the bond, and questions for them.',
     'Friendly HR round. They asked about family, hobbies and long-term plans, and explained the joining timeline.',
   ],
+  written_test: [
+    'Pen-and-paper technical test: 40 MCQs on core subjects plus a few numericals in 60 minutes. Negative marking for wrong answers.',
+    'Written test on core subjects at roughly GATE level, followed by a short aptitude section.',
+  ],
+  practical: [
+    'Hands-on round in their lab: debug a faulty board with a multimeter and an oscilloscope, then explain what was wrong.',
+    'Practical test: wire up and program a small PLC rig to sequence two conveyors, then walk the panel through the logic.',
+  ],
   other: ['Document verification and a short orientation call.'],
 }
 const PREP = [
@@ -232,6 +282,35 @@ const RESOURCES = [
   { title: 'System Design Primer', url: 'https://github.com/donnemartin/system-design-primer', kind: 'other' },
 ]
 
+/* Core-branch narrative pools. CORE_RESOURCES has the same length as
+   RESOURCES so the deterministic generator stays stable. */
+const CORE_PREP = [
+  'Revised core subjects from NPTEL lectures and class notes, and solved previous GATE questions for the written test.',
+  'Made one-page summaries for each core subject and practised numericals every day for six weeks.',
+  'Focused on my final-year project and lab work. I could explain every reading and design choice.',
+  'Aptitude from previous papers, plus two core subjects a week from the standard textbooks.',
+  'Core subjects from NPTEL lectures and our department notes, plus solving previous GATE questions for the technical round.',
+]
+const CORE_ADVICE = [
+  'Brush up on fundamentals from the first two years. Many questions were basic but needed precise answers.',
+  'Be ready to solve numericals on paper, step by step, without a calculator.',
+  'Know your project hardware or design end to end. They asked why each component was chosen.',
+  'Read about the company’s products and plants before the interview. Both panels asked about them.',
+  'If you get stuck, explain the principle you would use. Partial reasoning earned credit.',
+  'Carry your project report and certificates. The panel went through them.',
+  'Don’t skip aptitude practice. Several strong core students were filtered out in the first round.',
+  'Be honest when you don’t know something and explain how you would find out. The interviewer appreciated that more than guessing.',
+]
+const CORE_RESOURCES = [
+  { title: 'NPTEL core engineering courses', url: 'https://nptel.ac.in/', kind: 'course' },
+  { title: 'NPTEL lectures on YouTube', url: 'https://www.youtube.com/@nptelhrd', kind: 'video' },
+  { title: 'MIT OpenCourseWare', url: 'https://ocw.mit.edu/', kind: 'course' },
+  { title: 'All About Circuits', url: 'https://www.allaboutcircuits.com/', kind: 'other' },
+  { title: 'IndiaBix aptitude', url: 'https://www.indiabix.com/', kind: 'practice' },
+  { title: 'Electrical4U', url: 'https://www.electrical4u.com/', kind: 'other' },
+]
+const SOFTWARE_LIKE = ['software', 'data', 'business']
+
 /* ---------------- Experiences ---------------- */
 const roundTopicsFor = (type, focus) => {
   if (type === 'hr') return null
@@ -257,7 +336,7 @@ function buildRounds(expId, pipeline, focus, difficulty) {
       position: i + 1,
       round_type: type,
       mode: type === 'online_assessment' || rand() > 0.6 ? 'online' : 'offline',
-      duration_minutes: { online_assessment: 90, aptitude: 60, coding: 120, technical: int(40, 75), system_design: 60, group_discussion: 20, managerial: 45, hr: int(15, 30), other: 15 }[type],
+      duration_minutes: { online_assessment: 90, aptitude: 60, written_test: 60, practical: 60, coding: 120, technical: int(40, 75), system_design: 60, group_discussion: 20, managerial: 45, hr: int(15, 30), other: 15 }[type],
       difficulty: Math.max(1, Math.min(5, difficulty + int(-1, 1) - (type === 'hr' ? 2 : 0))),
       description: pick(ROUND_TEXT[type]),
       questions: [...new Map(questions.map((q) => [q.body, q])).values()].map((q, j) => ({
@@ -277,11 +356,12 @@ const authorPool = USERS.filter((u) => u.onboarded_at && u.id.startsWith('u-') &
 
 export const EXPERIENCES = []
 const counts = [7, 6, 4, 4, 4, 3, 3, 2, 3, 3, 2, 3, 2, 2, 2, 1, 1, 2]
-COMPANY_PROFILES.forEach((co, ci) => {
-  for (let k = 0; k < counts[ci]; k++) {
+function addExperiences(co, n, authors = authorPool) {
+  for (let k = 0; k < n; k++) {
     const idx = EXPERIENCES.length + 1
     const id = uuid('exp', idx)
-    const author = idx === 3 || idx === 19 ? USERS.find((u) => u.id === 'u-student') : pick(authorPool)
+    const author = idx === 3 || idx === 19 ? USERS.find((u) => u.id === 'u-student') : pick(authors)
+    const soft = SOFTWARE_LIKE.includes(co.domain ?? 'software')
     const type = pick(co.types)
     const year = author.graduation_year ?? 2026
     const internship = type === 'internship' || type === 'intern_ppo' || type === 'intern_fte'
@@ -298,7 +378,9 @@ COMPANY_PROFILES.forEach((co, ci) => {
       id,
       author_id: author.id,
       company_slug: co.slug,
-      role_title: (() => {
+      role_title: undefined,
+      domain_id: undefined,
+      _role: (() => {
         const internRoles = co.roles.filter((r) => /intern|summer/i.test(r))
         const fullRoles = co.roles.filter((r) => !/intern|summer/i.test(r))
         const pool = internship && type !== 'intern_fte' ? internRoles : fullRoles
@@ -311,9 +393,9 @@ COMPANY_PROFILES.forEach((co, ci) => {
       interview_month: `${interviewYear}-${String(month).padStart(2, '0')}-01`,
       eligibility: rand() < 0.7 ? { cgpa: pick([6.5, 7, 7.5, 8]), branches: pickN(['cse', 'it', 'ece', 'eee', 'ss', 'ds', 'mech'], int(2, 5)), backlogs: pick(['no', 'no', 'unknown']), other: '' } : null,
       application_process: pick(APPLY),
-      preparation: pick(PREP),
-      resources: pickN(RESOURCES, int(0, 3)),
-      advice: pick(ADVICE) + (rand() < 0.4 ? ` ${pick(ADVICE)}` : ''),
+      preparation: pick(soft ? PREP : CORE_PREP),
+      resources: pickN(soft ? RESOURCES : CORE_RESOURCES, int(0, 3)),
+      advice: (() => { const pool = soft ? ADVICE : CORE_ADVICE; return pick(pool) + (rand() < 0.4 ? ` ${pick(pool)}` : '') })(),
       difficulty,
       outcome,
       is_anonymous: anonymous,
@@ -328,8 +410,13 @@ COMPANY_PROFILES.forEach((co, ci) => {
       topics: [...topicSet].slice(0, 8),
       rounds,
     })
+    const e = EXPERIENCES[EXPERIENCES.length - 1]
+    e.role_title = e._role
+    e.domain_id = co.roleDomain?.(e._role) ?? co.domain ?? 'software'
+    delete e._role
   }
-})
+}
+COMPANY_PROFILES.forEach((co, ci) => addExperiences(co, counts[ci]))
 
 /* A hidden one and a draft, for moderation and drafts views */
 EXPERIENCES[5].status = 'hidden'
@@ -355,6 +442,48 @@ EXPERIENCES.slice(0, 30).forEach((e, i) => {
       COMMENTS.push({ id: `${id}-r`, experience_id: e.id, author_id: e.author_id, parent_id: id, body: 'Yes, about 15 minutes on it. Mostly why I chose the database and how I handled auth.', status: 'visible', created_at: iso((askedDaysAgo - 1) * DAY + 3600000) })
     }
   }
+})
+
+/* ---------------- Core-branch companies (MD1) ----------------
+   Added after comments so the earlier deterministic data doesn't shift.
+   Unverified with no description, exactly like the production directory. */
+const U = (name, industry, extra) => ({ ...C(name, industry, null, null, { is_verified: false, description_source: null }), ...extra })
+const CORE_PROFILES = [
+  U('ABB', 'Electrical equipment', { domain: 'electrical', roles: ['Graduate Engineer Trainee', 'Electrical Design Intern'],
+    pipelines: [['written_test', 'technical', 'technical', 'hr'], ['aptitude', 'technical', 'hr']],
+    focus: ['Electrical machines', 'Power systems', 'Power electronics', 'Switchgear & protection', 'Circuit theory'], types: ['full_time', 'internship'] }),
+  U('Schneider Electric', 'Electrical equipment', { domain: 'electrical', roles: ['Graduate Engineer Trainee', 'Application Engineer'],
+    pipelines: [['online_assessment', 'group_discussion', 'technical', 'hr']], focus: ['Power systems', 'Electric drives', 'Renewable energy', 'Electrical measurements'], types: ['full_time'] }),
+  U('Qualcomm', 'Semiconductors', { domain: 'electronics', roles: ['Hardware Engineer Intern', 'Associate Engineer, Hardware'],
+    pipelines: [['online_assessment', 'technical', 'technical', 'managerial']], focus: ['Digital electronics', 'VLSI design', 'Verilog / VHDL', 'Signals & systems', 'Analog circuits'], types: ['internship', 'intern_ppo', 'full_time'] }),
+  U('Siemens', 'Industrial automation', { domain: 'robotics', roles: ['Automation Engineer Trainee'],
+    pipelines: [['aptitude', 'technical', 'practical', 'hr']], focus: ['PLC & SCADA', 'Robot kinematics', 'Motion control', 'Hydraulics & pneumatics'], types: ['full_time'] }),
+  U('Honeywell', 'Industrial automation', { domain: 'instrumentation', roles: ['Engineer Trainee, Process Solutions', 'Instrumentation Intern'],
+    pipelines: [['online_assessment', 'technical', 'technical', 'hr']], focus: ['Control systems', 'Process control', 'Sensors & transducers', 'Industrial instrumentation'], types: ['full_time', 'internship'] }),
+  U('Ashok Leyland', 'Automotive', { domain: 'mechanical', roles: ['Graduate Engineer Trainee', 'Product Development Intern'],
+    pipelines: [['written_test', 'technical', 'technical', 'hr']], focus: ['IC engines', 'Automobile engineering', 'Strength of materials', 'Thermodynamics', 'GD&T'], types: ['full_time', 'internship'] }),
+  U('Larsen & Toubro', 'Construction & engineering', { domain: 'civil', roles: ['Graduate Engineer Trainee, Construction'],
+    pipelines: [['written_test', 'group_discussion', 'technical', 'hr']], focus: ['Structural analysis', 'RCC & steel design', 'Geotechnical engineering', 'Construction management', 'Surveying'], types: ['full_time'] }),
+  U('Tata Steel', 'Steel & metals', { domain: 'materials', roles: ['Graduate Trainee, Metallurgy'],
+    pipelines: [['online_assessment', 'group_discussion', 'technical', 'hr']], focus: ['Physical metallurgy', 'Heat treatment', 'Material testing', 'Welding'], types: ['full_time'] }),
+  U('GE HealthCare', 'Medical technology', { domain: 'biomedical', roles: ['Field Engineer Trainee', 'Biomedical Engineering Intern'],
+    pipelines: [['aptitude', 'technical', 'practical', 'hr']], focus: ['Biomedical instrumentation', 'Medical imaging', 'Analog circuits', 'Sensors & transducers'], types: ['full_time', 'internship'] }),
+  U('Arvind Limited', 'Textiles', { domain: 'textile', roles: ['Management Trainee, Textiles'],
+    pipelines: [['aptitude', 'technical', 'hr']], focus: ['Yarn & fabric manufacturing', 'Textile chemistry & dyeing', 'Textile testing'], types: ['full_time'] }),
+  U('Mu Sigma', 'Analytics', { domain: 'data', roles: ['Trainee Decision Scientist'],
+    pipelines: [['aptitude', 'group_discussion', 'technical', 'hr']], focus: ['Statistics', 'Probability', 'Data analysis', 'Guesstimates', 'SQL'], types: ['full_time'] }),
+  U('ZS Associates', 'Consulting & analytics', { domain: 'business', roles: ['Business Technology Associate', 'Decision Analytics Associate'],
+    pipelines: [['online_assessment', 'technical', 'technical', 'hr']], focus: ['Case interviews', 'Guesstimates', 'Excel & BI tools', 'Statistics'], types: ['full_time'] }),
+]
+const CORE_COUNTS = [4, 3, 4, 3, 3, 4, 3, 2, 2, 2, 3, 2]
+const DOMAIN_DEPTS = {
+  electrical: ['eee'], electronics: ['ece', 'eee'], robotics: ['rae', 'mech', 'ice'], instrumentation: ['ice', 'eee'], mechanical: ['mech', 'prod', 'auto'],
+  civil: ['civil'], materials: ['meta', 'mech'], biomedical: ['bme', 'ece'], textile: ['tt', 'ft'], data: ['ds', 'cse', 'it'], business: ['cse', 'mech', 'ece'],
+}
+CORE_PROFILES.forEach((co, i) => {
+  COMPANY_PROFILES.push(co)
+  const fromBranch = authorPool.filter((u) => DOMAIN_DEPTS[co.domain]?.includes(u.department_id))
+  addExperiences(co, CORE_COUNTS[i], fromBranch.length ? fromBranch : authorPool)
 })
 
 /* ---------------- Reports & moderation ---------------- */

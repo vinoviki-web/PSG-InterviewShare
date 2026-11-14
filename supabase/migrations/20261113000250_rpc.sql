@@ -397,6 +397,7 @@ begin
     'id', v.id,
     'company', (select jsonb_build_object('id', c.id, 'slug', c.slug, 'name', c.name, 'is_verified', c.is_verified) from public.companies c where c.id = v.company_id),
     'role_title', v.role_title, 'opportunity_type', v.opportunity_type, 'hiring_mode', v.hiring_mode,
+    'domain', (select jsonb_build_object('id', d.id, 'name', d.name) from public.domains d where d.id = v.domain_id),
     'department', case when v.hide_department and not v_own then null else (select jsonb_build_object('id', d.id, 'code', d.code, 'name', d.name) from public.departments d where d.id = v.department_id) end,
     'graduation_year', v.graduation_year, 'interview_month', v.interview_month,
     'eligibility', v.eligibility, 'application_process', v.application_process, 'preparation', v.preparation, 'advice', v.advice,
@@ -435,6 +436,7 @@ set search_path = ''
 as $$
   with pub as (select * from public.experiences e where e.status = 'published' and public.is_active_user())
   select jsonb_build_object(
+    'domain',     (select coalesce(jsonb_object_agg(k, n), '{}') from (select domain_id k, count(*) n from pub where domain_id is not null group by 1) x),
     'type',       (select coalesce(jsonb_object_agg(k, n), '{}') from (select opportunity_type::text k, count(*) n from pub group by 1) x),
     'hiring',     (select coalesce(jsonb_object_agg(k, n), '{}') from (select hiring_mode::text k, count(*) n from pub group by 1) x),
     'outcome',    (select coalesce(jsonb_object_agg(k, n), '{}') from (select outcome::text k, count(*) n from pub group by 1) x),
@@ -451,14 +453,21 @@ language sql stable security definer
 set search_path = ''
 as $$
   with pub as (select e.* from public.experiences e where e.status = 'published'),
-  by_company as (select c.name, count(*) n from pub join public.companies c on c.id = pub.company_id group by c.name)
+  by_company as (select c.id, c.name, count(*) n from pub join public.companies c on c.id = pub.company_id group by c.id, c.name)
   select jsonb_build_object(
     'show_counts', (select count(*) from pub) >= (select s.landing_stats_threshold from public.platform_settings s where s.id),
     'experiences', (select count(*) from pub),
     'companies',   (select count(*) from by_company),
     'departments', (select count(distinct department_id) from pub where not hide_department),
     'questions',   (select count(*) from public.questions q join pub on pub.id = q.experience_id),
-    'top_companies', coalesce((select jsonb_agg(jsonb_build_object('name', name, 'count', n) order by n desc, name) from (select * from by_company order by n desc, name limit 12) t), '[]')
+    -- Per-domain counts follow the same threshold as the headline counts (MD5).
+    'domains',     case when (select count(*) from pub) >= (select s.landing_stats_threshold from public.platform_settings s where s.id)
+                     then (select coalesce(jsonb_object_agg(domain_id, n), '{}') from (select domain_id, count(*) n from pub where domain_id is not null group by 1) d)
+                     else '{}'::jsonb end,
+    -- each company's most common domain, so the landing page can group them by field (MD5)
+    'top_companies', coalesce((select jsonb_agg(jsonb_build_object('name', t.name, 'count', t.n,
+                       'domain', (select p.domain_id from pub p where p.company_id = t.id and p.domain_id is not null group by 1 order by count(*) desc, 1 limit 1)
+                     ) order by t.n desc, t.name) from (select * from by_company order by n desc, name limit 12) t), '[]')
   )
 $$;
 

@@ -86,7 +86,7 @@ for (const e of exps) {
   seenDrive.add(key)
   const anonymous = e.is_anonymous
   rows.push(
-    `  (${q(id)}::uuid, ${q(author)}::uuid, ${q(e.company_slug)}, ${q(e.role_title)}, ${q(e.opportunity_type)}, ${q(e.hiring_mode)}, ${q(e.department_id)}, ${e.graduation_year}, ${q(e.interview_month)}::date, ` +
+    `  (${q(id)}::uuid, ${q(author)}::uuid, ${q(e.company_slug)}, ${q(e.role_title)}, ${q(e.domain_id)}, ${q(e.opportunity_type)}, ${q(e.hiring_mode)}, ${q(e.department_id)}, ${e.graduation_year}, ${q(e.interview_month)}::date, ` +
       `${e.eligibility ? `${q(JSON.stringify(e.eligibility))}::jsonb` : 'null'}, ${q(e.application_process)}, ${q(e.preparation)}, ${q(e.advice)}, ${e.difficulty}, ${q(e.outcome)}, ` +
       `${anonymous}, ${anonymous && e.hide_department}, ${q(e.status)}, ${q(e.hidden_reason ?? null)}, ${q(dupReason)}, ${q(e.published_at)}::timestamptz, ${e.view_count}, ${!!e.edited})`,
   )
@@ -104,15 +104,15 @@ for (const e of exps) {
 }
 
 sql += `
-insert into public.experiences (id, author_id, company_id, role_title, opportunity_type, hiring_mode, department_id, graduation_year, interview_month,
+insert into public.experiences (id, author_id, company_id, role_title, domain_id, opportunity_type, hiring_mode, department_id, graduation_year, interview_month,
   eligibility, application_process, preparation, advice, difficulty, outcome, is_anonymous, hide_department, status, hidden_reason, duplicate_reason,
   published_at, view_count, edited, confirmed_own, draft_step, draft_max_step)
-select v.id, v.author, c.id, v.role, v.typ::public.opportunity_type, v.hiring::public.hiring_mode, v.dept, v.yr::smallint, v.month,
+select v.id, v.author, c.id, v.role, v.domain, v.typ::public.opportunity_type, v.hiring::public.hiring_mode, v.dept, v.yr::smallint, v.month,
   v.el, v.app, v.prep, v.advice, v.diff::smallint, v.outcome::public.outcome, v.anon, v.hide_dept, v.status::public.experience_status, v.hidden_reason, v.dup,
   v.published, v.views, v.edited, true, 5, 5
 from (values
 ${rows.join(',\n')}
-) as v(id, author, company_slug, role, typ, hiring, dept, yr, month, el, app, prep, advice, diff, outcome, anon, hide_dept, status, hidden_reason, dup, published, views, edited)
+) as v(id, author, company_slug, role, domain, typ, hiring, dept, yr, month, el, app, prep, advice, diff, outcome, anon, hide_dept, status, hidden_reason, dup, published, views, edited)
 join public.companies c on c.slug = v.company_slug;
 
 insert into public.experience_rounds (id, experience_id, position, round_type, mode, duration_minutes, difficulty, description)

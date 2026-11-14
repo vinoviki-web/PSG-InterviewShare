@@ -36,18 +36,18 @@ insert into public.user_roles (user_id, role, granted_by) values
   ('22222222-2222-4222-8222-222222222222', 'moderator', '33333333-3333-4333-8333-333333333333');
 
 -- Two fictional published experiences (one anonymous)
-insert into public.experiences (id, author_id, company_id, role_title, opportunity_type, hiring_mode, department_id, graduation_year,
+insert into public.experiences (id, author_id, company_id, role_title, domain_id, opportunity_type, hiring_mode, department_id, graduation_year,
   interview_month, application_process, preparation, advice, difficulty, outcome, is_anonymous, confirmed_own, status, published_at, draft_step)
-select 'aaaaaaaa-0000-4000-8000-000000000001'::uuid, '44444444-4444-4444-8444-444444444444'::uuid, c.id, 'SDE Intern', 'internship', 'on_campus', 'it', 2026,
+select 'aaaaaaaa-0000-4000-8000-000000000001'::uuid, '44444444-4444-4444-8444-444444444444'::uuid, c.id, 'SDE Intern', 'software', 'internship', 'on_campus', 'it', 2026,
   date '2025-08-01', 'Registered through the placement portal; shortlisted on CGPA.',
   'Two problems a day for three months, plus OS and DBMS revision on weekends.',
   'Trace your approach out loud before coding. They cared about the journey from brute force to optimal.',
   4, 'selected', false, true, 'published', now() - interval '3 days', 5
 from public.companies c where c.slug = 'amazon';
 
-insert into public.experiences (id, author_id, company_id, role_title, opportunity_type, hiring_mode, department_id, graduation_year,
+insert into public.experiences (id, author_id, company_id, role_title, domain_id, opportunity_type, hiring_mode, department_id, graduation_year,
   interview_month, preparation, advice, difficulty, outcome, is_anonymous, hide_department, confirmed_own, status, published_at, draft_step)
-select 'aaaaaaaa-0000-4000-8000-000000000002'::uuid, '44444444-4444-4444-8444-444444444444'::uuid, c.id, 'Member Technical Staff', 'full_time', 'on_campus', 'it', 2026,
+select 'aaaaaaaa-0000-4000-8000-000000000002'::uuid, '44444444-4444-4444-8444-444444444444'::uuid, c.id, 'Member Technical Staff', 'software', 'full_time', 'on_campus', 'it', 2026,
   date '2025-09-01', 'Aptitude from previous papers; C output questions daily.',
   'Practise writing code without autocomplete. The lab round had no IDE support.',
   3, 'not_selected', true, true, true, 'published', now() - interval '1 day', 5

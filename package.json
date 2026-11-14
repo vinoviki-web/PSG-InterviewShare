@@ -20,8 +20,9 @@
     "test:community": "node scripts/community-integration.mjs",
     "test:admin": "node scripts/admin-integration.mjs",
     "test:e2e": "playwright test",
-    "test:all": "npm run db:test && npm run test:auth && npm run test:wizard && npm run test:browse && npm run test:companies && npm run test:community && npm run test:admin && npm run test:e2e",
-    "backup": "bash scripts/backup.sh"
+    "test:all": "npm run check:taxonomy && npm run db:test && npm run test:auth && npm run test:wizard && npm run test:browse && npm run test:companies && npm run test:community && npm run test:admin && npm run test:e2e",
+    "backup": "bash scripts/backup.sh",
+    "check:taxonomy": "node scripts/gen-reference-sql.mjs --check"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

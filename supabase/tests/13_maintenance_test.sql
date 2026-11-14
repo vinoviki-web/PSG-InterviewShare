@@ -21,9 +21,9 @@ create function pg_temp.exp(p_key text, p_status public.experience_status, p_upd
 returns void language plpgsql as $$
 declare v uuid := gen_random_uuid();
 begin
-  insert into public.experiences (id, author_id, company_id, role_title, opportunity_type, hiring_mode, department_id,
+  insert into public.experiences (id, author_id, company_id, role_title, domain_id, opportunity_type, hiring_mode, department_id,
     graduation_year, interview_month, difficulty, outcome, published_at, confirmed_own, status, created_at, updated_at, deleted_at)
-  values (v, (select ids.v from ids where k = 'a'), (select id from public.companies order by name limit 1), 'Maintenance test ' || p_key, 'internship', 'on_campus', 'cse',
+  values (v, (select ids.v from ids where k = 'a'), (select id from public.companies order by name limit 1), 'Maintenance test ' || p_key, 'software', 'internship', 'on_campus', 'cse',
     2026, date '2026-01-01', 3, 'selected', case when p_status = 'draft' then null else now() - interval '200 days' end,
     p_status <> 'draft', p_status, now() - interval '200 days', now() - p_updated, now() - p_deleted);
   insert into ids values (p_key, v);

@@ -4,6 +4,7 @@
  * prototype's src/api/companies.js.
  */
 import { supabase } from '@/lib/supabase'
+import { DOMAIN } from '@/lib/taxonomy'
 import { unwrap } from './errors'
 import { getLookups, feedRowToExperience, FEED_COLUMNS } from './mappers'
 
@@ -46,7 +47,9 @@ export async function listIndustries() {
 
 /** One company; a merged company returns { redirect: slug }. */
 export async function getCompany(slug) {
-  return unwrap(await supabase.rpc('get_company', { p_slug: slug }))
+  const c = unwrap(await supabase.rpc('get_company', { p_slug: slug }))
+  if (!c || c.redirect) return c
+  return { ...c, domains: (c.domains ?? []).filter((d) => DOMAIN[d.id]).map((d) => ({ ...DOMAIN[d.id], count: d.count })) }
 }
 
 /** Student-reported insights (or { n, sufficient: false, threshold }) + the latest 3 experiences. */

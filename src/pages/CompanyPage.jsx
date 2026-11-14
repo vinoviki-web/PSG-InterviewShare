@@ -190,7 +190,24 @@ export default function CompanyPage() {
           </p>
         </div>
       ) : (
-        <p className="mt-5 text-small text-ink-500">This company was added by a student and hasn’t been verified by admins yet.</p>
+        <p className="mt-5 text-small text-ink-500">No description yet. Admins haven’t verified this company’s details.</p>
+      )}
+
+      {c.domains?.length > 0 && (
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span className="text-small font-medium text-ink-700">PSG students were hired here for</span>
+          {c.domains.map((d) => (
+            <Link
+              key={d.value}
+              to={`/experiences?company=${c.slug}&domain=${d.value}`}
+              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-ink-200 bg-white px-3 text-small font-medium text-ink-800 transition-colors duration-[120ms] hover:border-teal-600 hover:text-teal-800"
+            >
+              <d.icon className="size-3.5 text-teal-700" aria-hidden />
+              {d.short}
+              <span className="tabular text-ink-500">{d.count}</span>
+            </Link>
+          ))}
+        </div>
       )}
 
       <Tabs value={tab} onValueChange={setTab} className="mt-8">

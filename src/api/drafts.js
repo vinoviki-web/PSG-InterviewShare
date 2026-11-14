@@ -7,6 +7,7 @@
 import { request, requireViewer, ApiError, db } from './client'
 import { newId, nowIso, companyBySlug, audit } from '@/mocks/db'
 import { DEPARTMENT, TOPIC } from '@/mocks/lookups'
+import { DOMAIN } from '@/lib/taxonomy'
 import { OPPORTUNITY_TYPES, HIRING_MODES, OUTCOMES, ROUND_TYPES, QUESTION_KINDS, RESOURCE_KINDS } from '@/lib/constants'
 import { slugify } from '@/lib/utils'
 
@@ -74,6 +75,7 @@ function sanitizeContent(p) {
     company_slug: p.company_slug && companyBySlug(p.company_slug) ? p.company_slug : null,
     new_company_name: p.company_slug ? null : str(p.new_company_name, 80).trim() || null,
     role_title: str(p.role_title, 140),
+    domain_id: DOMAIN[p.domain_id] ? p.domain_id : null,
     opportunity_type: oneOf(p.opportunity_type, OPP),
     hiring_mode: oneOf(p.hiring_mode, HIRE),
     interview_month: monthOk(p.interview_month) ? p.interview_month : null,
@@ -126,6 +128,7 @@ export function validateForPublish(e) {
   if (!e.company_slug && !(e.new_company_name?.trim().length >= 2)) f.company = 'Choose the company, or add it if it isn’t listed.'
   const role = e.role_title?.trim() ?? ''
   if (role.length < LIMITS.role_title[0] || role.length > LIMITS.role_title[1]) f.role_title = 'Use 2–100 characters for the role title.'
+  if (!DOMAIN[e.domain_id]) f.domain_id = 'Choose the domain this role belongs to.'
   if (!OPP.includes(e.opportunity_type)) f.opportunity_type = 'Choose the opportunity type.'
   if (!HIRE.includes(e.hiring_mode)) f.hiring_mode = 'Choose the hiring mode.'
   if (!monthOk(e.interview_month)) f.interview_month = 'Choose the month you interviewed.'

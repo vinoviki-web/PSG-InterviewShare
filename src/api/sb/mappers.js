@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { unwrap } from './errors'
+import { DOMAIN } from '@/lib/taxonomy'
 
 let lookupsPromise
 /** Departments and topics from the database, cached for the session. */
@@ -25,6 +26,7 @@ export function feedRowToExperience(r, { departments, topics }) {
     id: r.id,
     company: { id: r.company_id, slug: r.company_slug, name: r.company_name, is_verified: r.company_verified },
     role_title: r.role_title,
+    domain: DOMAIN[r.domain_id] ?? null,
     opportunity_type: r.opportunity_type,
     hiring_mode: r.hiring_mode,
     department: r.department_id ? departments[r.department_id] ?? null : null,
@@ -55,6 +57,6 @@ export function feedRowToExperience(r, { departments, topics }) {
 }
 
 export const FEED_COLUMNS =
-  'id, company_id, company_slug, company_name, company_verified, role_title, opportunity_type, hiring_mode, department_id, graduation_year, ' +
+  'id, company_id, company_slug, company_name, company_verified, role_title, domain_id, opportunity_type, hiring_mode, department_id, graduation_year, ' +
   'interview_month, difficulty, outcome, is_anonymous, status, hidden_reason, published_at, updated_at, edited, helpful_count, view_count, ' +
   'comment_count, author_id, author_name, author_handle, is_owner, has_voted, has_saved, topic_ids, pipeline, question_count, excerpt'

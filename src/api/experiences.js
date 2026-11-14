@@ -1,6 +1,7 @@
 import { request, viewer, requireViewer, ApiError, db } from './client'
 import { companyBySlug, userById, nowIso } from '@/mocks/db'
 import { DEPARTMENT, TOPIC } from '@/mocks/lookups'
+import { DOMAIN } from '@/lib/taxonomy'
 import { readingMinutes } from '@/lib/utils'
 
 const isMod = (v) => v?.roles?.some((r) => r === 'moderator' || r === 'admin')
@@ -28,6 +29,7 @@ export function serializeExperience(e, v = viewer(), { full = false } = {}) {
     id: e.id,
     company: company && { id: company.id, slug: company.slug, name: company.name, is_verified: company.is_verified },
     role_title: e.role_title,
+    domain: DOMAIN[e.domain_id] ?? null,
     opportunity_type: e.opportunity_type,
     hiring_mode: e.hiring_mode,
     department: e.hide_department && !own ? null : DEPARTMENT[e.department_id] ?? null,
@@ -98,7 +100,7 @@ function matches(e, q) {
 const arr = (v) => (v == null || v === '' ? [] : Array.isArray(v) ? v : String(v).split(','))
 
 /**
- * params: { q, company[], type[], hiring[], outcome[], difficulty[], dept[], year[], round[], sort, cursor, limit, author }
+ * params: { q, domain[], company[], type[], hiring[], outcome[], difficulty[], dept[], year[], round[], sort, cursor, limit, author }
  * returns { items, total, nextCursor }
  */
 function mock_searchExperiences(params = {}) {
@@ -106,11 +108,12 @@ function mock_searchExperiences(params = {}) {
     () => {
       const v = requireViewer()
       const f = {
-        company: arr(params.company), type: arr(params.type), hiring: arr(params.hiring), outcome: arr(params.outcome),
+        domain: arr(params.domain), company: arr(params.company), type: arr(params.type), hiring: arr(params.hiring), outcome: arr(params.outcome),
         difficulty: arr(params.difficulty).map(Number), dept: arr(params.dept), year: arr(params.year).map(Number), round: arr(params.round),
       }
       let rows = db.experiences
         .filter((e) => e.status === 'published')
+        .filter((e) => !f.domain.length || f.domain.includes(e.domain_id))
         .filter((e) => !f.company.length || f.company.includes(e.company_slug))
         .filter((e) => !f.type.length || f.type.includes(e.opportunity_type))
         .filter((e) => !f.hiring.length || f.hiring.includes(e.hiring_mode))
@@ -145,6 +148,7 @@ function mock_getFacets() {
     const pub = db.experiences.filter((e) => e.status === 'published')
     const count = (key) => pub.reduce((m, e) => ((m[e[key]] = (m[e[key]] ?? 0) + 1), m), {})
     return {
+      domain: count('domain_id'),
       type: count('opportunity_type'),
       hiring: count('hiring_mode'),
       outcome: count('outcome'),

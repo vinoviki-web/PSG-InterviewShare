@@ -9,7 +9,7 @@ import { updateProfile, exportMyData, deleteAccount } from '@/api/profile'
 import { signOut } from '@/api/auth'
 import { useAuth } from '@/hooks/useAuth'
 import { departmentOptions, TOPICS } from '@/mocks/lookups'
-import { TARGET_ROLES } from '@/lib/constants'
+import { DOMAINS } from '@/lib/taxonomy'
 import { Button, Card, Chip, Dialog, Field, Input, RadioCards, Select, Switch, TagPicker, Textarea, CharCount, useToast } from '@/components/ui'
 import { AvatarPicker } from '@/components/AvatarPicker'
 import { cn } from '@/lib/utils'
@@ -81,9 +81,9 @@ function ProfileForm() {
       </Field>
       <Controller control={control} name="interests" render={({ field }) => (
         <fieldset>
-          <legend className="mb-2 text-body font-medium text-ink-800">Target roles <span className="font-normal text-ink-500">(optional)</span></legend>
+          <legend className="mb-2 text-body font-medium text-ink-800">Domains you’re interested in <span className="font-normal text-ink-500">(optional)</span></legend>
           <div className="flex flex-wrap gap-2">
-            {TARGET_ROLES.map((r) => <Chip key={r} selected={field.value.includes(r)} onClick={() => field.onChange(field.value.includes(r) ? field.value.filter((x) => x !== r) : [...field.value, r])}>{r}</Chip>)}
+            {DOMAINS.filter((d) => d.value !== 'other').map((d) => <Chip key={d.value} selected={field.value.includes(d.value)} onClick={() => field.onChange(field.value.includes(d.value) ? field.value.filter((x) => x !== d.value) : [...field.value, d.value])}>{d.label}</Chip>)}
           </div>
         </fieldset>
       )} />

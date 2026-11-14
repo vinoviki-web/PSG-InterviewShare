@@ -16,7 +16,7 @@ const bob = await onboardedStudent('wb', 'Wizard Bob', 'it', 2026)
 const wizardPayload = (extra = {}) => ({
   company_slug: 'zoho-corporation',
   new_company_name: null,
-  role_title: 'Member Technical Staff',
+  role_title: 'Member Technical Staff', domain_id: 'software',
   opportunity_type: 'full_time',
   hiring_mode: 'on_campus',
   interview_month: '2025-09-01',
@@ -46,7 +46,7 @@ const wizardPayload = (extra = {}) => ({
 // ---------------------------------------------------------------- draft + autosave
 let draftId
 {
-  const { data, error } = await alice.rpc('save_draft', { p: { company_slug: 'zoho-corporation', role_title: 'Member Technical Staff', rounds: [], topics: [], resources: [], draft_step: 1 } })
+  const { data, error } = await alice.rpc('save_draft', { p: { company_slug: 'zoho-corporation', role_title: 'Member Technical Staff', domain_id: 'software', rounds: [], topics: [], resources: [], draft_step: 1 } })
   draftId = data?.id
   check(!error && !!draftId, 'the first meaningful change creates a draft', error?.message)
   const { error: e2 } = await alice.rpc('save_draft', { p: { ...wizardPayload(), id: draftId, draft_step: 3, draft_max_step: 3 } })
@@ -114,7 +114,7 @@ let publishedId = draftId
 {
   const name = `Nimbus Analytics ${stamp}`
   const { data: d } = await bob.rpc('save_draft', {
-    p: wizardPayload({ company_slug: null, new_company_name: name, role_title: 'Data Analyst Intern', opportunity_type: 'internship', department_id: 'it', graduation_year: 2026, is_anonymous: true, hide_department: true }),
+    p: wizardPayload({ company_slug: null, new_company_name: name, role_title: 'Data Analyst Intern', domain_id: 'software', opportunity_type: 'internship', department_id: 'it', graduation_year: 2026, is_anonymous: true, hide_department: true }),
   })
   const { data, error } = await bob.rpc('publish_experience', { p_id: d.id })
   check(!error && data?.created_company?.name === name, 'publishing with a new company creates it (unverified)', error?.message)
@@ -126,7 +126,7 @@ let publishedId = draftId
 
 // ---------------------------------------------------------------- drafts list + delete
 {
-  const { data: d } = await alice.rpc('save_draft', { p: { company_slug: 'amazon', role_title: 'SDE Intern', rounds: [], topics: [], resources: [] } })
+  const { data: d } = await alice.rpc('save_draft', { p: { company_slug: 'amazon', role_title: 'SDE Intern', domain_id: 'software', rounds: [], topics: [], resources: [] } })
   const { error } = await alice.rpc('delete_draft', { p_id: d.id })
   check(!error, 'a draft can be deleted', error?.message)
   const { data: gone } = await alice.from('experiences').select('id').eq('id', d.id)

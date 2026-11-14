@@ -52,9 +52,9 @@
 
 | Suite | Count |
 |---|---|
-| Database (pgTAP, `npm run db:test`) | 432 |
+| Database (pgTAP, `npm run db:test`) | 462 |
 | Live integration (`test:auth`, `wizard`, `browse`, `companies`, `community`, `admin`) | 165 |
-| Browser end-to-end + accessibility (`npm run test:e2e`) | 34 |
+| Browser end-to-end + accessibility (`npm run test:e2e`) | 37 |
 
 `npm run test:all` runs everything (stack running and seeded: `npm run db:start && npm run db:reset`). GitHub runs it on every push.
 
@@ -101,7 +101,7 @@ npx supabase db push --remote                        # migrations only; demo see
 npx supabase functions deploy delete-account --no-verify-jwt
 npx supabase secrets set ALLOWED_ORIGINS=https://<your-project>.vercel.app   # placeholder now, final value in step 7
 ```
-**Check:** Dashboard → **Table Editor** shows 21 departments and 18 companies; **Edge Functions** lists `delete-account`; **Database → Cron** (Integrations → Cron) lists `interviewshare-maintenance`.
+**Check:** Dashboard → **Table Editor** shows 21 departments, 13 domains, 117 topics and 40 companies; **Edge Functions** lists `delete-account`; **Database → Cron** (Integrations → Cron) lists `interviewshare-maintenance`.
 
 ### Step 5 🧑 · Sign-in settings (dashboard, I'll guide screen by screen)
 | Where (Authentication → …) | Setting |

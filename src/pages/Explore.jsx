@@ -6,7 +6,7 @@ import { searchExperiences, getFacets } from '@/api/experiences'
 import { listAllCompanies } from '@/api/companies'
 import { Button, Chip, Dialog, EmptyState, ErrorState, FetchingBar, Input, Segmented, Select, Card } from '@/components/ui'
 import { ExperienceRow, ExperienceRowSkeleton } from '@/components/experience/ExperienceRow'
-import { FilterPanel, FILTER_KEYS, readFilters, countActive, chipLabel } from '@/components/explore/Filters'
+import { FilterPanel, FILTER_KEYS, readFilters, countActive, chipLabel, DomainBar } from '@/components/explore/Filters'
 import { useDebounced } from '@/hooks/useDebounced'
 import { useIsLarge } from '@/hooks/useMediaQuery'
 import { SORTS } from '@/lib/constants'
@@ -91,7 +91,7 @@ export default function Explore() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-h1">Explore experiences</h1>
-          <p className="mt-1 text-body text-ink-600">Search across companies, roles, topics and the questions students were asked.</p>
+          <p className="mt-1 text-body text-ink-600">Every branch, every domain: search companies, roles, topics and the questions students were asked.</p>
         </div>
       </div>
 
@@ -122,6 +122,14 @@ export default function Explore() {
             <span className="hidden sm:inline">Filters</span>
             {active > 0 && <span className="inline-flex size-5 items-center justify-center rounded-full bg-teal-600 text-caption text-white tabular">{active}</span>}
           </Button>
+        </div>
+        <div className="mt-3">
+          <DomainBar
+            selected={filters.domain}
+            onToggle={toggle}
+            facets={facets?.domain}
+            onClear={() => setSp((p) => { const n = new URLSearchParams(p); n.delete('domain'); return n }, { replace: true })}
+          />
         </div>
         <div className="mt-2.5 sm:hidden">
           <Segmented size="sm" options={SORTS} value={sort} onValueChange={setSort} className="w-full [&>button]:flex-1" aria-label="Sort by" />

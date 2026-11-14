@@ -88,7 +88,7 @@ let target
   check(!bErr && b.has_saved, 'saving an experience works')
   await s.from('bookmarks').delete().eq('experience_id', target.id)
 
-  const { data: mine } = await s.rpc('save_draft', { p: { company_slug: 'oracle', role_title: 'Member of Technical Staff', opportunity_type: 'full_time', hiring_mode: 'on_campus', interview_month: '2025-08-01', department_id: 'cse', graduation_year: 2027, difficulty: 3, outcome: 'selected', confirmed: true, rounds: [{ round_type: 'technical', description: 'Database internals and two SQL questions with follow-ups.', questions: [] }], topics: [], resources: [] } })
+  const { data: mine } = await s.rpc('save_draft', { p: { company_slug: 'oracle', role_title: 'Member of Technical Staff', domain_id: 'software', opportunity_type: 'full_time', hiring_mode: 'on_campus', interview_month: '2025-08-01', department_id: 'cse', graduation_year: 2027, difficulty: 3, outcome: 'selected', confirmed: true, rounds: [{ round_type: 'technical', description: 'Database internals and two SQL questions with follow-ups.', questions: [] }], topics: [], resources: [] } })
   await s.rpc('publish_experience', { p_id: mine.id })
   const { error: own } = await s.from('helpful_votes').insert({ experience_id: mine.id })
   check(own?.code === '42501', 'you can’t mark your own experience as helpful', own?.code)

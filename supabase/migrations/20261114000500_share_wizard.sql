@@ -81,6 +81,7 @@ begin
     company_id          = v_company,
     new_company_name    = case when v_company is null then nullif(left(trim(p ->> 'new_company_name'), 120), '') end,
     role_title          = nullif(trim(p ->> 'role_title'), ''),
+    domain_id           = (select d.id from public.domains d where d.id = nullif(p ->> 'domain_id', '')),
     opportunity_type    = nullif(p ->> 'opportunity_type', '')::public.opportunity_type,
     hiring_mode         = nullif(p ->> 'hiring_mode', '')::public.hiring_mode,
     department_id       = nullif(p ->> 'department_id', ''),
@@ -203,6 +204,7 @@ begin
     v_errors := v_errors || '{"company": "Choose the company, or add it if it isn’t listed."}';
   end if;
   if v_row.role_title is null then v_errors := v_errors || '{"role_title": "Use 2–100 characters for the role title."}'; end if;
+  if v_row.domain_id is null then v_errors := v_errors || '{"domain_id": "Choose the domain this role belongs to."}'; end if;
   if v_row.opportunity_type is null then v_errors := v_errors || '{"opportunity_type": "Choose the opportunity type."}'; end if;
   if v_row.hiring_mode is null then v_errors := v_errors || '{"hiring_mode": "Choose the hiring mode."}'; end if;
   if v_row.interview_month is null then
@@ -326,7 +328,7 @@ begin
     'company_slug', (select c.slug from public.companies c where c.id = v.company_id),
     'company', (select jsonb_build_object('slug', c.slug, 'name', c.name) from public.companies c where c.id = v.company_id),
     'new_company_name', v.new_company_name,
-    'role_title', v.role_title, 'opportunity_type', v.opportunity_type, 'hiring_mode', v.hiring_mode,
+    'role_title', v.role_title, 'domain_id', v.domain_id, 'opportunity_type', v.opportunity_type, 'hiring_mode', v.hiring_mode,
     'interview_month', to_char(v.interview_month, 'YYYY-MM-DD'),
     'department_id', v.department_id, 'graduation_year', v.graduation_year,
     'eligibility', v.eligibility, 'application_process', v.application_process,

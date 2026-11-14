@@ -9,8 +9,24 @@ import { batchLabel, formatMonth, timeAgo, cn } from '@/lib/utils'
 /** "CSE ’27" or "’27" (department hidden on some anonymous posts). */
 export const batchText = (e) => [e.department?.code, batchLabel(e.graduation_year)].filter(Boolean).join(' ')
 
+/** The role's field (MD1), e.g. "Electrical", with its icon. */
+export function DomainLabel({ domain }) {
+  if (!domain) return null
+  const Icon = domain.icon
+  return (
+    <span className="inline-flex items-center gap-1 font-medium text-ink-700">
+      {Icon && <Icon className="size-3.5 text-teal-700" aria-hidden />}
+      <span className="sr-only">Domain: </span>
+      <span>{domain.short}</span>
+    </span>
+  )
+}
+
 export function MetaLine({ exp, className }) {
-  const parts = [OPPORTUNITY[exp.opportunity_type]?.label, HIRING[exp.hiring_mode]?.label, formatMonth(exp.interview_month), batchText(exp)].filter(Boolean)
+  const parts = [
+    exp.domain && <DomainLabel key="domain" domain={exp.domain} />,
+    OPPORTUNITY[exp.opportunity_type]?.label, HIRING[exp.hiring_mode]?.label, formatMonth(exp.interview_month), batchText(exp),
+  ].filter(Boolean)
   return (
     <p className={cn('flex flex-wrap items-center gap-x-1.5 text-small text-ink-600', className)}>
       {parts.map((p, i) => (

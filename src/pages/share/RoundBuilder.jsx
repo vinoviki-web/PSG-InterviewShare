@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useFieldArray, useFormContext, useFormState, useWatch } from 'react-hook-form'
+import { DOMAIN, topicsForDomain } from '@/lib/taxonomy'
 import { ArrowDown, ArrowUp, ChevronDown, Plus, Trash2, LayoutTemplate, MessageSquarePlus } from 'lucide-react'
 import { Button, IconButton, Input, Textarea, CharCount, Select, Segmented, DifficultyInput, TagPicker, useToast } from '@/components/ui'
 import { ROUND, ROUND_TYPES, QUESTION_KINDS, DIFFICULTY_LABELS } from '@/lib/constants'
-import { TOPICS } from '@/mocks/lookups'
 import { LIMITS } from '@/api/drafts'
 import { cn, pluralize } from '@/lib/utils'
 import { CField, InlineError, fieldId } from './parts'
@@ -28,7 +28,8 @@ const PLACEHOLDERS = {
   online_assessment: 'e.g. 90 minutes on HackerRank: 2 coding problems and 20 MCQs on OS and DBMS. Camera on, no tab switching.',
   aptitude: 'e.g. 60 minutes, pen and paper. Quant, logical reasoning and a few C output questions. Very tight on time.',
   coding: 'e.g. 3 problems in 2 hours on their own platform. Partial marks for passing some test cases.',
-  technical: 'e.g. 45 minutes with a senior engineer. Started with my resume project, then two DSA questions. They wanted me to explain my approach before coding.',
+  written_test: 'e.g. 60 minutes, pen and paper. 40 MCQs on core subjects and five numericals. Negative marking.',
+  practical: 'e.g. 45 minutes in their lab. Debug a faulty board with a multimeter and oscilloscope, then explain the fault.',
   system_design: 'e.g. Design a URL shortener. They pushed on scaling reads and how I’d handle hot keys.',
   group_discussion: 'e.g. 10 people, 15 minutes on “Is AI replacing jobs?”. They noted who moved the discussion forward, not who spoke most.',
   managerial: 'e.g. 30 minutes with a manager. Mostly about teamwork, a conflict I handled and why this role.',
@@ -197,6 +198,7 @@ export function RoundBuilder({ announce, openRequest }) {
 
 function RoundCard({ id, index, total, error, open, onOpenChange, onMove, onRemove, announce }) {
   const r = useWatch({ name: `rounds.${index}` }) ?? {}
+  const domain = useWatch({ name: 'domain_id' })
   const [settled, setSettled] = useState(open)
   const type = ROUND[r.round_type]
   const Icon = type?.icon
@@ -323,7 +325,7 @@ function RoundCard({ id, index, total, error, open, onOpenChange, onMove, onRemo
               label="What happened"
               hint="Format, platform and what they focused on. **bold**, `code` and lists work."
               counter={(v) => <CharCount value={v ?? ''} max={LIMITS.round_description} />}
-              render={(field) => <Textarea {...field} minRows={3} placeholder={PLACEHOLDERS[r.round_type] ?? 'What was the format, how long, and what did they focus on?'} />}
+              render={(field) => <Textarea {...field} minRows={3} placeholder={(r.round_type === 'technical' ? DOMAIN[domain]?.technicalExample ?? DOMAIN.software.technicalExample : PLACEHOLDERS[r.round_type]) ?? 'What was the format, how long, and what did they focus on?'} />}
             />
             <QuestionList roundIndex={index} roundId={id} roundError={error} announce={announce} />
           </div>
@@ -413,7 +415,7 @@ function QuestionList({ roundIndex, roundId, roundError, announce }) {
                     label="Topics"
                     optional
                     render={(field) => (
-                      <TagPicker ref={field.ref} options={TOPICS} value={field.value} onChange={field.onChange} max={LIMITS.question_topics} placeholder="Tag topics…" />
+                      <TagPicker ref={field.ref} options={topicsForDomain(domain)} value={field.value} onChange={field.onChange} max={LIMITS.question_topics} placeholder="Tag topics…" />
                     )}
                   />
                 </div>

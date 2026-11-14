@@ -10,6 +10,7 @@ import { ExperienceRow, ExperienceRowSkeleton, ExperienceCompact, ExperienceComp
 import { CompanyCard, CompanyCardSkeleton } from '@/components/company/CompanyCard'
 import { greeting, timeAgo, compact } from '@/lib/utils'
 import { DEPARTMENT } from '@/mocks/lookups'
+import { DOMAIN } from '@/lib/taxonomy'
 import { listMyDrafts } from '@/api/drafts'
 
 async function latestDraft() {
@@ -56,6 +57,13 @@ export default function Home() {
   const dept = DEPARTMENT[user.department_id]
   const latest = useQuery({ queryKey: ['experiences', 'home-latest'], queryFn: () => searchExperiences({ sort: 'latest', limit: 4 }) })
   const fromDept = useQuery({ queryKey: ['experiences', 'home-dept', user.department_id], queryFn: () => searchExperiences({ dept: user.department_id, sort: 'helpful', limit: 3 }) })
+  // Domains the student picked at onboarding or in Settings (MD3)
+  const myDomains = (user.interests ?? []).filter((d) => DOMAIN[d])
+  const forDomains = useQuery({
+    queryKey: ['experiences', 'home-domains', myDomains],
+    queryFn: () => searchExperiences({ domain: myDomains, sort: 'helpful', limit: 3 }),
+    enabled: myDomains.length > 0,
+  })
   const trending = useQuery({ queryKey: ['companies', 'trending'], queryFn: () => trendingCompanies(6) })
   const recent = useQuery({ queryKey: ['experiences', 'recent'], queryFn: () => getRecentlyViewed(4) })
   const saved = useQuery({ queryKey: ['experiences', 'saved'], queryFn: getSaved })
@@ -90,6 +98,27 @@ export default function Home() {
           >
             <div className="space-y-3">{latest.data?.items.map((e) => <ExperienceRow key={e.id} exp={e} />)}</div>
           </Section>
+
+          {myDomains.length > 0 ? (
+            <Section
+              query={forDomains}
+              title="For your domains"
+              description={myDomains.map((d) => DOMAIN[d].label).join(' · ')}
+              action={<Link to={`/experiences?domain=${myDomains.join(',')}&sort=helpful`} className="inline-flex items-center gap-1 text-body font-medium text-teal-700 hover:underline">See all <ArrowRight className="size-4" /></Link>}
+              skeleton={<div className="space-y-3">{[0, 1].map((i) => <ExperienceRowSkeleton key={i} />)}</div>}
+            >
+              {forDomains.data?.items.length ? (
+                <div className="space-y-3">{forDomains.data.items.map((e) => <ExperienceRow key={e.id} exp={e} />)}</div>
+              ) : (
+                <p className="text-body text-ink-500">Nothing in your domains yet. Yours could be the first.</p>
+              )}
+            </Section>
+          ) : (
+            <Card className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-body text-ink-700">Pick the domains you’re preparing for to see experiences from your field first.</p>
+              <Button asChild variant="secondary" size="sm"><Link to="/settings">Choose domains</Link></Button>
+            </Card>
+          )}
 
           <Section
             query={trending}

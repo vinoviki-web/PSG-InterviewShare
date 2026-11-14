@@ -1,96 +1,238 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { Accordion } from 'radix-ui'
-import { Mail, BadgeCheck, EyeOff, ShieldCheck, ChevronDown, ArrowRight, ThumbsUp, Clock3, Cpu, Code2, HeartHandshake, MonitorCheck } from 'lucide-react'
+import { Accordion, Tabs as TabsPrimitive } from 'radix-ui'
+import { Mail, BadgeCheck, EyeOff, ShieldCheck, ChevronDown, ArrowRight, ThumbsUp, Clock3 } from 'lucide-react'
 import { getPublicStats } from '@/api/public'
 import { Button, CompanyLogo, OutcomePill, Tag, DifficultyMeter, Skeleton } from '@/components/ui'
 import { RoundPipeline } from '@/components/experience/Pipeline'
-import { cn } from '@/lib/utils'
+import { cn, pluralize } from '@/lib/utils'
+import { ROUND } from '@/lib/constants'
+import { DOMAINS, DOMAIN } from '@/lib/taxonomy'
 
-/* A clearly-labelled EXAMPLE (not real student content) shows what's inside
-   without exposing gated data to visitors (D11). */
-function ProductPreview() {
+/* Clearly-labelled FICTIONAL examples (not real student content) show what's
+   inside without exposing gated data to visitors (D11). One per field, because
+   placements span every branch, not just software (MD1). */
+const EXAMPLES = [
+  {
+    domain: 'software', company: 'Acme Systems', role: 'SDE Intern', meta: 'Internship · On-campus · Aug 2026 · CSE ’28',
+    outcome: 'selected', difficulty: 4, steps: ['online_assessment', 'technical', 'technical', 'hr'],
+    rounds: [
+      ['online_assessment', 'Online assessment', '2 coding questions · 90 min'],
+      ['technical', 'Technical 1', 'Sliding window, then a graph follow-up'],
+      ['technical', 'Technical 2', 'Project deep-dive · OS and DBMS'],
+      ['hr', 'HR', 'Relocation, joining timeline'],
+    ],
+    tags: ['Sliding window', 'Graphs', 'OS'], helpful: 42, minutes: 6,
+    question: ['Technical 1', 'Longest substring without repeating characters', 4],
+  },
+  {
+    domain: 'electronics', company: 'Siliconridge Semiconductors', role: 'Analog Design Intern', meta: 'Internship · On-campus · Jul 2026 · ECE ’28',
+    outcome: 'selected', difficulty: 4, steps: ['online_assessment', 'technical', 'technical', 'hr'],
+    rounds: [
+      ['online_assessment', 'Online assessment', 'Aptitude and 30 MCQs on analog and digital · 60 min'],
+      ['technical', 'Technical 1', 'Op-amp basics, then design a low-pass filter'],
+      ['technical', 'Technical 2', 'CMOS inverter sizing · final-year project'],
+      ['hr', 'HR', 'Relocation to Bengaluru, joining timeline'],
+    ],
+    tags: ['Analog circuits', 'VLSI design', 'Signals & systems'], helpful: 31, minutes: 7,
+    question: ['Technical 1', 'Derive the gain of a non-inverting amplifier', 3],
+  },
+  {
+    domain: 'electrical', company: 'Gridline Power', role: 'Graduate Engineer Trainee', meta: 'Full-time · On-campus · Sep 2026 · EEE ’27',
+    outcome: 'selected', difficulty: 3, steps: ['written_test', 'technical', 'practical', 'hr'],
+    rounds: [
+      ['written_test', 'Written technical test', '40 MCQs on machines and power systems · 60 min'],
+      ['technical', 'Technical', 'Transformer losses, then a per-unit fault calculation'],
+      ['practical', 'Practical', 'Wire a star-delta starter on the trainer kit'],
+      ['hr', 'HR', 'Plant shifts, bond terms'],
+    ],
+    tags: ['Electrical machines', 'Power systems', 'Protection'], helpful: 27, minutes: 5,
+    question: ['Technical', 'Why is a transformer rated in kVA, not kW?', 6],
+  },
+  {
+    domain: 'mechanical', company: 'Torqueworks Automotive', role: 'Design Engineer', meta: 'Full-time · On-campus · Oct 2026 · MECH ’27',
+    outcome: 'not_selected', difficulty: 3, steps: ['aptitude', 'written_test', 'technical', 'hr'],
+    rounds: [
+      ['aptitude', 'Aptitude', 'Quant and logical reasoning · 45 min'],
+      ['written_test', 'Written technical test', 'Thermodynamics and strength of materials · 60 min'],
+      ['technical', 'Technical', 'Bending-moment diagram on paper, then GD&T on a drawing'],
+      ['hr', 'HR', 'Plant location, why core over IT'],
+    ],
+    tags: ['Strength of materials', 'GD&T', 'Thermodynamics'], helpful: 19, minutes: 6,
+    question: ['Technical', 'Sketch the bending-moment diagram for a cantilever with a point load', 2],
+  },
+  {
+    domain: 'civil', company: 'Stonebridge Infra', role: 'Graduate Engineer Trainee', meta: 'Full-time · On-campus · Aug 2026 · CIVIL ’27',
+    outcome: 'selected', difficulty: 3, steps: ['written_test', 'group_discussion', 'technical', 'hr'],
+    rounds: [
+      ['written_test', 'Written technical test', 'RCC, geotechnics and surveying MCQs · 60 min'],
+      ['group_discussion', 'Group discussion', 'Smart cities for Tier-2 towns? · 15 min'],
+      ['technical', 'Technical', 'Reading a soil report, then RCC slab basics'],
+      ['hr', 'HR', 'Site postings and travel'],
+    ],
+    tags: ['RCC design', 'Geotechnics', 'Construction'], helpful: 23, minutes: 5,
+    question: ['Technical', 'When would you choose a pile foundation over a raft?', 3],
+  },
+]
+
+function ExampleCard({ ex }) {
+  const domain = DOMAIN[ex.domain]
   return (
-    <div className="relative md:mb-12" aria-label="Example of an experience on PSG InterviewShare">
+    <div className="relative md:mb-12">
       <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-lg">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-caption font-medium uppercase tracking-wider text-ink-500">Example</span>
-          <OutcomePill outcome="selected" />
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <span className="inline-flex items-center gap-1.5 text-caption font-medium uppercase tracking-wider text-ink-500">
+            Fictional example · <domain.icon className="size-3.5 text-teal-700" aria-hidden /> {domain.short}
+          </span>
+          <OutcomePill outcome={ex.outcome} />
         </div>
         <div className="flex gap-3.5">
-          <CompanyLogo name="Acme Systems" size={40} />
+          <CompanyLogo name={ex.company} size={40} />
           <div className="min-w-0">
-            <p className="text-body-lg font-semibold text-ink-900">Acme Systems · SDE Intern</p>
-            <p className="text-small text-ink-600">Internship · On-campus · Aug 2026 · CSE ’28</p>
+            <p className="text-body-lg font-semibold text-ink-900">{ex.company} · {ex.role}</p>
+            <p className="text-small text-ink-600">{ex.meta}</p>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <RoundPipeline steps={['online_assessment', 'technical', 'technical', 'hr']} withTooltips={false} />
-          <DifficultyMeter value={4} />
+          <RoundPipeline steps={ex.steps} withTooltips={false} />
+          <DifficultyMeter value={ex.difficulty} />
         </div>
         <ol className="mt-5 space-y-0">
-          {[
-            { icon: MonitorCheck, t: 'Online assessment', d: '2 coding questions · 90 min' },
-            { icon: Code2, t: 'Technical 1', d: 'Sliding window, then a graph follow-up' },
-            { icon: Cpu, t: 'Technical 2', d: 'Project deep-dive · OS and DBMS' },
-            { icon: HeartHandshake, t: 'HR', d: 'Relocation, joining timeline' },
-          ].map((r, i, a) => (
-            <li key={r.t} className="relative flex gap-3 pb-4 last:pb-0">
-              {i < a.length - 1 && <span className="absolute left-[13px] top-7 h-[calc(100%-20px)] w-px bg-ink-200" aria-hidden />}
-              <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-600">
-                <r.icon className="size-3.5" aria-hidden />
-              </span>
-              <div className="pt-0.5">
-                <p className="text-body font-medium text-ink-900">{r.t}</p>
-                <p className="text-small text-ink-500">{r.d}</p>
-              </div>
-            </li>
-          ))}
+          {ex.rounds.map(([type, t, d], i, a) => {
+            const Icon = ROUND[type]?.icon
+            return (
+              <li key={t + i} className="relative flex gap-3 pb-4 last:pb-0">
+                {i < a.length - 1 && <span className="absolute left-[13px] top-7 h-[calc(100%-20px)] w-px bg-ink-200" aria-hidden />}
+                <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-600">
+                  {Icon && <Icon className="size-3.5" aria-hidden />}
+                </span>
+                <div className="pt-0.5">
+                  <p className="text-body font-medium text-ink-900">{t}</p>
+                  <p className="text-small text-ink-500">{d}</p>
+                </div>
+              </li>
+            )
+          })}
         </ol>
-        <div className="mt-4 flex items-center justify-between border-t border-ink-100 pt-3.5">
-          <div className="flex gap-1.5">
-            <Tag>Sliding window</Tag>
-            <Tag>Graphs</Tag>
-            <Tag>OS</Tag>
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-ink-100 pt-3.5">
+          <div className="flex min-w-0 flex-wrap gap-1.5">
+            {ex.tags.map((t) => <Tag key={t}>{t}</Tag>)}
           </div>
-          <span className="flex items-center gap-3 text-small text-ink-500">
-            <span className="flex items-center gap-1 tabular"><ThumbsUp className="size-3.5" aria-hidden />42</span>
-            <span className="flex items-center gap-1"><Clock3 className="size-3.5" aria-hidden />6 min</span>
+          <span className="flex shrink-0 items-center gap-3 text-small text-ink-500">
+            <span className="flex items-center gap-1 tabular"><ThumbsUp className="size-3.5" aria-hidden />{ex.helpful}</span>
+            <span className="flex items-center gap-1"><Clock3 className="size-3.5" aria-hidden />{ex.minutes} min</span>
           </span>
         </div>
       </div>
-      <div className="absolute -bottom-16 -left-4 hidden w-[250px] rounded-lg border border-ink-200 bg-white p-3.5 shadow-md md:block lg:-left-12">
-        <p className="text-caption font-medium text-ink-500">Question · Technical 1</p>
-        <p className="mt-1 text-small font-medium text-ink-900">Longest substring without repeating characters</p>
-        <p className="mt-1.5 text-caption font-medium text-teal-700">Also in 4 other experiences →</p>
+      <div className="absolute -bottom-16 -left-4 hidden w-[260px] rounded-lg border border-ink-200 bg-white p-3.5 shadow-md md:block lg:-left-12">
+        <p className="text-caption font-medium text-ink-500">Question · {ex.question[0]}</p>
+        <p className="mt-1 text-small font-medium text-ink-900">{ex.question[1]}</p>
+        <p className="mt-1.5 text-caption font-medium text-teal-700">Also in {ex.question[2]} other experiences →</p>
       </div>
     </div>
+  )
+}
+
+/** Switch the example between fields. Real tabs: arrow keys move between them. */
+function ProductPreview() {
+  const [domain, setDomain] = useState(EXAMPLES[0].domain)
+  return (
+    <TabsPrimitive.Root value={domain} onValueChange={setDomain} aria-label="Example experiences by domain">
+      <TabsPrimitive.List aria-label="Choose a domain" className="-mx-4 mb-4 flex gap-1.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
+        {EXAMPLES.map((ex) => {
+          const d = DOMAIN[ex.domain]
+          return (
+            <TabsPrimitive.Trigger
+              key={ex.domain}
+              value={ex.domain}
+              className={cn(
+                'inline-flex h-8 shrink-0 items-center rounded-full border px-3 text-small font-medium transition-colors duration-[120ms] outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2',
+                'border-ink-200 bg-white text-ink-700 hover:border-ink-300 data-[state=active]:border-ink-900 data-[state=active]:bg-ink-900 data-[state=active]:text-white',
+              )}
+            >
+              {d.short}
+            </TabsPrimitive.Trigger>
+          )
+        })}
+      </TabsPrimitive.List>
+      {EXAMPLES.map((ex) => (
+        <TabsPrimitive.Content key={ex.domain} value={ex.domain} className="outline-none" aria-label={`Fictional ${DOMAIN[ex.domain].label} example`}>
+          <ExampleCard ex={ex} />
+        </TabsPrimitive.Content>
+      ))}
+    </TabsPrimitive.Root>
+  )
+}
+
+/** Every field PSG students are hired into (MD1). Visitors are sent to sign in, then land on the filtered list. */
+function DomainGrid({ stats }) {
+  const counts = stats?.domains ?? {}
+  return (
+    <section className="container-page py-20" aria-labelledby="domains-h">
+      <div className="max-w-[640px]">
+        <h2 id="domains-h" className="text-h1">Every branch, every domain</h2>
+        <p className="mt-3 text-body-lg text-ink-600">
+          Placements at PSG go far beyond software. Each experience is tagged with the field of the role, so an EEE, Mech or Civil student can follow theirs across every company.
+        </p>
+      </div>
+      <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {DOMAINS.filter((d) => d.value !== 'other').map((d) => (
+          <li key={d.value}>
+            <Link
+              to={`/experiences?domain=${d.value}`}
+              className="group flex h-full gap-3 rounded-lg border border-ink-200 bg-white p-4 shadow-xs transition-[border-color,box-shadow] duration-[120ms] hover:border-ink-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+            >
+              <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
+                <d.icon className="size-5" aria-hidden />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-body font-semibold text-ink-900 group-hover:text-teal-800">{d.label}</span>
+                <span className="mt-0.5 block text-small text-ink-500">{d.covers}</span>
+                {counts[d.value] > 0 && <span className="mt-1.5 block text-caption font-medium tabular text-ink-700">{pluralize(counts[d.value], 'experience')}</span>}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
 function CompaniesStrip({ stats, loading }) {
   if (loading) return <div className="flex gap-3">{[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} className="h-10 w-36" />)}</div>
   if (!stats?.top_companies?.length) return null
+  // Group by each company's main domain, in the usual domain order (MD5)
+  const groups = DOMAINS.map((d) => ({ d, items: stats.top_companies.filter((c) => (DOMAIN[c.domain] ? c.domain : 'other') === d.value) })).filter((g) => g.items.length)
   return (
     <section aria-labelledby="companies-h" className="border-y border-ink-200 bg-white py-10">
       <div className="container-page">
         <h2 id="companies-h" className="text-small font-medium text-ink-500">Companies PSG students have written about</h2>
-        <ul className="mt-4 flex flex-wrap gap-2.5">
-          {stats.top_companies.map((c) => (
-            <li key={c.name} className="flex h-11 items-center gap-2.5 rounded-lg border border-ink-200 bg-ink-25 pl-1.5 pr-3.5">
-              <CompanyLogo name={c.name} size={32} className="shadow-none" />
-              <span className="text-body font-medium text-ink-800">{c.name}</span>
-              <span className="text-small tabular text-ink-500">{c.count}</span>
-            </li>
+        <div className="mt-4 flex flex-wrap gap-x-8 gap-y-5">
+          {groups.map(({ d, items }) => (
+            <div key={d.value}>
+              <h3 className="mb-2 inline-flex items-center gap-1.5 text-caption font-medium uppercase tracking-wider text-ink-500">
+                <d.icon className="size-3.5" aria-hidden />{d.short}
+              </h3>
+              <ul className="flex flex-wrap gap-2.5">
+                {items.map((c) => (
+                  <li key={c.name} className="flex h-11 items-center gap-2.5 rounded-lg border border-ink-200 bg-ink-25 pl-1.5 pr-3.5">
+                    <CompanyLogo name={c.name} size={32} className="shadow-none" />
+                    <span className="text-body font-medium text-ink-800">{c.name}</span>
+                    <span className="text-small tabular text-ink-500">{c.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   )
 }
 
 const FAQ = [
+  ['Is it only for software jobs?', 'No. It covers every branch: core electronics, electrical, instrumentation, mechanical, robotics, civil, biomedical, materials, textile, data and business roles, as well as software. Each experience is tagged with the field of the role, and rounds like written technical tests and practicals are first-class.'],
   ['Who can use PSG InterviewShare?', 'Only current PSG College of Technology students with a verified @psgtech.ac.in account. Alumni access through a linked personal email is planned.'],
   ['Is it official?', 'No. It’s an independent project built and moderated by PSG students. It isn’t affiliated with or endorsed by PSG College of Technology or its placement cell, and nothing here is official company information unless it’s labelled that way.'],
   ['Can I share anonymously?', 'Yes. Readers won’t see your name or profile. The system still knows it was a verified student, and only admins can see the author, solely to handle abuse. Every time they do is logged.'],
@@ -112,10 +254,10 @@ export default function Landing() {
           </p>
           <h1 className="mt-6 text-[2rem] font-semibold leading-[1.15] tracking-[-0.03em] text-ink-900 sm:text-display lg:text-[3.25rem] lg:leading-[1.08]">
             Real interview experiences from PSG students.
-            <span className="block text-ink-500">Company by company, round by round.</span>
+            <span className="block text-ink-500">Every branch. Round by round.</span>
           </h1>
           <p className="mt-6 max-w-[520px] text-body-lg text-ink-600">
-            See how your seniors’ interviews actually went: every round, the questions asked, how they prepared, and what they’d do differently.
+            Software, core electronics, electrical, mechanical, civil and more. See how your seniors’ interviews actually went: every round, the questions asked, how they prepared, and what they’d do differently.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button asChild size="lg">
@@ -150,12 +292,14 @@ export default function Landing() {
 
       <CompaniesStrip stats={stats} loading={isPending} />
 
+      <DomainGrid stats={stats} />
+
       <section className="container-page py-20" aria-labelledby="how-h">
         <h2 id="how-h" className="max-w-[560px] text-h1">From a senior’s interview to your preparation plan</h2>
         <ol className="mt-10 grid gap-8 md:grid-cols-3">
           {[
             ['Read the rounds', 'Every experience is broken into rounds: format, duration, difficulty, and the exact questions asked.'],
-            ['Prepare by topic', 'Questions are tagged by topic, so you can see what a company really focuses on across many interviews.'],
+            ['Prepare by topic', 'Questions are tagged by topic, from power systems and GD&T to graphs, so you can see what a company really focuses on.'],
             ['Give back', 'After your interview, share yours in about ten minutes. Drafts save automatically, and you can post anonymously.'],
           ].map(([t, d], i) => (
             <li key={t} className="border-t-2 border-ink-900 pt-5">

@@ -67,7 +67,7 @@ create function pg_temp.payload(p_company text default 'amazon', p_role text def
 returns jsonb language sql as $$
   select jsonb_build_object(
     'company_id', (select id from public.companies where slug = p_company),
-    'role_title', p_role, 'opportunity_type', 'internship', 'hiring_mode', 'on_campus',
+    'role_title', p_role, 'domain_id', 'software', 'opportunity_type', 'internship', 'hiring_mode', 'on_campus',
     'department_id', 'cse', 'graduation_year', 2026, 'interview_month', '2025-08-01',
     'difficulty', 3, 'outcome', 'selected', 'confirmed_own', true, 'advice', 'Practise daily.',
     'topics', jsonb_build_array('arrays'),

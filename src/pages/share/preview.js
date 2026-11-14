@@ -1,4 +1,5 @@
 import { DEPARTMENT, TOPIC } from '@/mocks/lookups'
+import { DOMAIN } from '@/lib/taxonomy'
 import { readingMinutes } from '@/lib/utils'
 
 const isHttps = (u) => {
@@ -37,6 +38,7 @@ export function toPreview(v, { user, id, companies, edited, updatedAt } = {}) {
     id: id ?? 'preview',
     company: { name: known?.name ?? co?.name ?? 'Company', slug: known?.slug ?? null, is_verified: known?.is_verified ?? false },
     role_title: v.role_title.trim() || 'Role title',
+    domain: DOMAIN[v.domain_id] ?? null,
     opportunity_type: v.opportunity_type,
     hiring_mode: v.hiring_mode,
     department: v.is_anonymous && v.hide_department ? null : DEPARTMENT[v.department_id] ?? null,

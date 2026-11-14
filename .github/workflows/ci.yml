@@ -17,6 +17,9 @@ jobs:
       - uses: supabase/setup-cli@v3
         with: { version: 3.1.0 }
 
+      - name: Reference data matches the app's domain and topic list
+        run: npm run check:taxonomy
+
       - name: Build (prototype and database modes)
         run: |
           npm run build

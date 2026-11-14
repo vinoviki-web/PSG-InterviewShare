@@ -1,6 +1,6 @@
 # PSG InterviewShare
 
-A platform for PSG College of Technology students to share and explore real interview experiences.
+A platform for PSG College of Technology students to share and explore real interview experiences, across every branch: software, core electronics, electrical, mechanical, civil and more.
 
 > **Independent student project.** Not affiliated with or endorsed by PSG College of Technology or its placement cell.
 

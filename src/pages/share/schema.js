@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { DOMAINS } from '@/lib/taxonomy'
 import { LIMITS } from '@/api/drafts'
 import { OPPORTUNITY_TYPES, HIRING_MODES, OUTCOMES, ROUND_TYPES, QUESTION_KINDS, RESOURCE_KINDS } from '@/lib/constants'
 
@@ -29,8 +30,9 @@ const basics = z.object({
   role_title: z
     .string()
     .trim()
-    .min(LIMITS.role_title[0], 'Enter the role title, e.g. SDE Intern.')
+    .min(LIMITS.role_title[0], 'Enter the role title from the job post.')
     .max(LIMITS.role_title[1], 'Keep the role title under 100 characters.'),
+  domain_id: z.enum(DOMAINS.map((d) => d.value), { error: 'Choose the domain this role belongs to.' }),
   opportunity_type: z.enum(vals(OPPORTUNITY_TYPES), { error: 'Choose the opportunity type.' }),
   hiring_mode: z.enum(vals(HIRING_MODES), { error: 'Choose the hiring mode.' }),
   interview_month: z
@@ -124,7 +126,7 @@ export const FULL_SCHEMA = STEP_SCHEMAS[4]
 /** Which step owns a field path (client or server error keys). */
 export function stepOfPath(path) {
   const head = String(path).split('.')[0]
-  if (['company', 'company_slug', 'new_company_name', 'role_title', 'opportunity_type', 'hiring_mode', 'interview_month', 'department_id', 'graduation_year'].includes(head)) return 1
+  if (['company', 'company_slug', 'new_company_name', 'role_title', 'domain_id', 'opportunity_type', 'hiring_mode', 'interview_month', 'department_id', 'graduation_year'].includes(head)) return 1
   if (['eligibility', 'application_process', 'rounds'].includes(head)) return 2
   if (['topics', 'preparation', 'resources'].includes(head)) return 3
   return 4
@@ -148,6 +150,7 @@ export function defaultValues(user, config) {
   return {
     company: null,
     role_title: '',
+    domain_id: '',
     opportunity_type: '',
     hiring_mode: '',
     interview_month: '',
@@ -183,6 +186,7 @@ export function fromRow(row, user, config) {
         ? { slug: null, name: row.new_company_name, is_new: true }
         : null,
     role_title: row.role_title ?? '',
+    domain_id: row.domain_id ?? '',
     opportunity_type: row.opportunity_type ?? '',
     hiring_mode: row.hiring_mode ?? '',
     interview_month: row.interview_month ?? '',
@@ -225,6 +229,7 @@ export function toPayload(v) {
     company_slug: v.company?.is_new ? null : v.company?.slug ?? null,
     new_company_name: v.company?.is_new ? v.company.name : null,
     role_title: v.role_title,
+    domain_id: v.domain_id || null,
     opportunity_type: v.opportunity_type || null,
     hiring_mode: v.hiring_mode || null,
     interview_month: v.interview_month || null,

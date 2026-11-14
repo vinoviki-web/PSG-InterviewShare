@@ -8,6 +8,18 @@ test.describe('visitors', () => {
     await expectAccessible(page, 'landing')
   })
 
+  test('the landing example switches between branches', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByRole('tab', { name: 'Software' })).toHaveAttribute('aria-selected', 'true')
+    await page.getByRole('tab', { name: 'Electrical' }).click()
+    await expect(page.getByText('Gridline Power · Graduate Engineer Trainee')).toBeVisible()
+    await expect(page.getByText('Written technical test').first()).toBeVisible()
+    await page.getByRole('tab', { name: 'Civil' }).click()
+    await expect(page.getByText('Stonebridge Infra · Graduate Engineer Trainee')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Every branch, every domain' })).toBeVisible()
+    await expectAccessible(page, 'landing (civil example)')
+  })
+
   test('member pages send visitors to sign in and come back afterwards', async ({ page }) => {
     await page.goto('/experiences')
     await expect(page).toHaveURL(/\/login/)

@@ -145,6 +145,18 @@ Details: [10-launch.md](10-launch.md)
 | LA11 | **Independent student project** (owner decision): name *PSG InterviewShare*; no PSG logo or claim of endorsement; "independent student project, not affiliated with or endorsed by PSG College of Technology" on every page, About, Terms and the sign-in email. Official branding only after placement-cell permission (A2). |
 | LA12 | The GitHub repository stays **public** (owner decision, 2026-11-14). Accepted: encrypted backup artifacts are downloadable by signed-in GitHub users (unreadable without the passphrase), scheduled backups pause after 60 days without commits, and the demo admin address is visible. No secrets are in the repository; pull-request test runs get no secrets. |
 
+## Every-branch redesign (✅ 2026-11-14, approved by the owner before launch)
+PSG placements span every branch, not just software. Spec: domains, topics, round types and screens below.
+| ID | Decision |
+|---|---|
+| MD1 | Every experience records a **domain**: the field of the *role* (not the student's department). 13 domains: Software & IT, Data & analytics, Electronics & semiconductors, Electrical & power, Instrumentation & control, Mechanical & manufacturing, Robotics & automation, Civil & construction, Biomedical & biotech, Materials & metallurgy, Textile & fashion, Business/consulting/finance, Other. Required to publish (server-checked). Shown on every card, filterable in Explore, listed per company, used on Home. |
+| MD2 | One source of truth for domains and topics: `src/lib/taxonomy.js`. Migration 0900's rows are generated from it (`scripts/gen-reference-sql.mjs`), and CI fails if they drift. 117 topics in 16 groups, each tied to a domain (aptitude and general topics belong to all). Topic pickers list the chosen domain's topics first. |
+| MD3 | New round types **Written technical test** and **Practical / hands-on**; new question types **Numerical / calculation** and **Design problem**. Onboarding and Settings ask for domains of interest (stored in `profiles.interests`) instead of software-flavoured target roles. |
+| MD4 | 22 core and non-software recruiters added to the starting directory (ABB, Schneider Electric, Siemens, Honeywell, Qualcomm, Intel, NXP, Analog Devices, Ashok Leyland, L&T, Tata Steel, GE HealthCare, Arvind, ZS, Mu Sigma…), unverified with no description until admins curate them. |
+| MD5 | The landing page shows clearly labelled *fictional* examples for five fields, a "Browse by domain" grid, and companies grouped by their main domain. Per-domain counts follow the same visitor threshold as the headline counts. |
+| MD6 | Because no production database existed yet, the domain changes were made **inside the existing migrations** (one clean schema at launch). From the first production push onwards, changes go in new migrations only. |
+| MD7 | Found during this work: in database mode the landing stats and the announcement banner were still reading prototype data. Both now read the database (`src/api/sb/public.js`). |
+
 ## Open questions (❓)
 | ID | Question | Recommendation |
 |---|---|---|

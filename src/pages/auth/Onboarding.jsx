@@ -8,7 +8,7 @@ import { completeOnboarding, updateProfile } from '@/api/profile'
 import { useAuth } from '@/hooks/useAuth'
 import { consumeReturnTo } from '@/routes/guards'
 import { departmentOptions, TOPICS } from '@/mocks/lookups'
-import { TARGET_ROLES } from '@/lib/constants'
+import { DOMAINS, topicsForDomain } from '@/lib/taxonomy'
 import { Button, Field, Input, Select, Chip, TagPicker, ProgressBar, useToast } from '@/components/ui'
 import { AvatarPicker } from '@/components/AvatarPicker'
 import { AuthLayout } from './AuthLayout'
@@ -110,15 +110,15 @@ export default function Onboarding() {
           <h1 ref={heading} tabIndex={-1} className="text-h2 outline-none">What are you preparing for?</h1>
           <p className="mt-1.5 text-body text-ink-600">Optional. We use this only to put relevant experiences first on your home page.</p>
           <fieldset className="mt-6">
-            <legend className="mb-2 text-body font-medium text-ink-800">Target roles</legend>
+            <legend className="mb-2 text-body font-medium text-ink-800">Domains you’re interested in</legend>
             <div className="flex flex-wrap gap-2">
-              {TARGET_ROLES.map((r) => (
-                <Chip key={r} selected={interests.includes(r)} onClick={() => toggle(interests, setInterests, r)}>{r}</Chip>
+              {DOMAINS.filter((d) => d.value !== 'other').map((d) => (
+                <Chip key={d.value} selected={interests.includes(d.value)} onClick={() => toggle(interests, setInterests, d.value)}>{d.label}</Chip>
               ))}
             </div>
           </fieldset>
           <Field label="Topics you’re preparing" optional className="mt-6">
-            <TagPicker options={TOPICS} value={topics} onChange={setTopics} max={10} placeholder="e.g. Graphs, DBMS" />
+            <TagPicker options={topicsForDomain(interests[0])} value={topics} onChange={setTopics} max={10} placeholder="e.g. Power systems, Graphs" />
           </Field>
           <div className="mt-8 flex gap-3">
             <Button variant="ghost" size="lg" onClick={() => setStep(1)}>Back</Button>

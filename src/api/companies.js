@@ -2,6 +2,7 @@ import { request, requireViewer, ApiError, db } from './client'
 import { companyBySlug } from '@/mocks/db'
 import { serializeExperience, alsoIn } from './experiences'
 import { TOPIC } from '@/mocks/lookups'
+import { DOMAIN } from '@/lib/taxonomy'
 
 const published = () => db.experiences.filter((e) => e.status === 'published')
 const INSIGHT_THRESHOLD = 3
@@ -53,7 +54,10 @@ function mock_getCompany(slug) {
     let c = companyBySlug(slug)
     if (c?.merged_into_id) return { redirect: c.merged_into_id }
     if (!c) throw new ApiError('We couldn’t find that company.', { code: 'not_found' })
-    return { ...companyStats(c), description: c.description, description_source: c.description_source }
+    const byDomain = {}
+    db.experiences.filter((e) => e.company_slug === c.slug && e.status === 'published' && e.domain_id).forEach((e) => (byDomain[e.domain_id] = (byDomain[e.domain_id] ?? 0) + 1))
+    const domains = Object.entries(byDomain).filter(([id]) => DOMAIN[id]).sort((a, b) => b[1] - a[1]).map(([id, count]) => ({ ...DOMAIN[id], count }))
+    return { ...companyStats(c), description: c.description, description_source: c.description_source, domains }
   })
 }
 

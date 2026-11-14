@@ -79,9 +79,9 @@ export function focusFirstError(root, attempt = 0) {
 
 /* ---------------- Step rail (≥ lg) ---------------- */
 const TIPS = [
-  ['Use the role title from the job post, e.g. “SDE Intern”, so juniors can find it.', 'Department and batch help readers judge how relevant this is.'],
+  ['Use the role title from the job post, e.g. “Graduate Engineer Trainee” or “SDE Intern”.', 'Pick the domain of the role, so juniors in that field can find it.', 'Department and batch help readers judge how relevant this is.'],
   ['Add rounds in the order they happened, even the short ones.', 'Write questions the way they were asked.', 'Skip test content you agreed not to share.'],
-  ['Specific beats general: “6 weeks, mostly trees and DP” helps more than “practised a lot”.', 'Only link resources you actually used.'],
+  ['Specific beats general: “6 weeks of power-systems numericals” helps more than “practised a lot”.', 'Only link resources you actually used.'],
   ['Not selected? Your experience is just as valuable. Juniors learn most from what went wrong.', 'Anonymous experiences still show your batch.'],
   ['Read it once as a junior would. Is anything unclear?', 'You can edit it after publishing.'],
 ]
