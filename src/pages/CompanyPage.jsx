@@ -185,7 +185,7 @@ export default function CompanyPage() {
         <div className="mt-5 max-w-[720px]">
           <p className={expanded ? 'text-body text-ink-700' : 'line-clamp-2 text-body text-ink-700'}>{c.description}</p>
           <p className="mt-1 flex items-center gap-3 text-caption text-ink-500">
-            <span>Source: {c.description_source === 'official_site' ? 'company website' : c.description_source === 'student_submitted' ? 'submitted by a student' : 'written by Roundwise admins'}</span>
+            <span>Source: {c.description_source === 'official_site' ? 'company website' : c.description_source === 'student_submitted' ? 'submitted by a student' : 'written by PSG InterviewShare admins'}</span>
             {c.description.length > 160 && <button onClick={() => setExpanded((e) => !e)} className="font-medium text-ink-700 hover:underline">{expanded ? 'Less' : 'More'}</button>}
           </p>
         </div>

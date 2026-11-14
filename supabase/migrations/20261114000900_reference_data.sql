@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0900 · Reference data (runs in EVERY environment, incl. production)
+-- PSG InterviewShare · 0900 · Reference data (runs in EVERY environment, incl. production)
 -- Departments, topics and the starting company list, moved out of seed.sql
 -- so production gets them through migrations and never gets demo accounts.
 -- Idempotent (ON CONFLICT DO NOTHING).

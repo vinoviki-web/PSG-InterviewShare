@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
    without exposing gated data to visitors (D11). */
 function ProductPreview() {
   return (
-    <div className="relative md:mb-12" aria-label="Example of an experience on Roundwise">
+    <div className="relative md:mb-12" aria-label="Example of an experience on PSG InterviewShare">
       <div className="rounded-xl border border-ink-200 bg-white p-5 shadow-lg">
         <div className="mb-4 flex items-center justify-between">
           <span className="text-caption font-medium uppercase tracking-wider text-ink-500">Example</span>
@@ -91,8 +91,8 @@ function CompaniesStrip({ stats, loading }) {
 }
 
 const FAQ = [
-  ['Who can use Roundwise?', 'Only current PSG College of Technology students with a verified @psgtech.ac.in account. Alumni access through a linked personal email is planned.'],
-  ['Is it official?', 'No. It’s built and moderated by PSG students. It isn’t run by the placement cell, and nothing here is official company information unless it’s labelled that way.'],
+  ['Who can use PSG InterviewShare?', 'Only current PSG College of Technology students with a verified @psgtech.ac.in account. Alumni access through a linked personal email is planned.'],
+  ['Is it official?', 'No. It’s an independent project built and moderated by PSG students. It isn’t affiliated with or endorsed by PSG College of Technology or its placement cell, and nothing here is official company information unless it’s labelled that way.'],
   ['Can I share anonymously?', 'Yes. Readers won’t see your name or profile. The system still knows it was a verified student, and only admins can see the author, solely to handle abuse. Every time they do is logged.'],
   ['What shouldn’t I share?', 'Confidential test content you agreed not to share, personal details about interviewers, or anything you didn’t experience yourself. See the guidelines.'],
   ['Why do I need to sign in to read?', 'Experiences are written for PSG juniors, not the open internet. Keeping them inside the community protects contributors and keeps the content honest.'],
@@ -171,7 +171,7 @@ export default function Landing() {
         <div className="container-page grid grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
             <h2 id="trust-h" className="text-h1">Built for honesty</h2>
-            <p className="mt-3 text-body-lg text-ink-600">Useful experiences include the rejections and the hard parts. Roundwise is designed so students can share them safely.</p>
+            <p className="mt-3 text-body-lg text-ink-600">Useful experiences include the rejections and the hard parts. PSG InterviewShare is designed so students can share them safely.</p>
           </div>
           <ul className="grid gap-6 sm:grid-cols-3">
             {[

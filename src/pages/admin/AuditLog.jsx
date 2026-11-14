@@ -123,7 +123,7 @@ export default function AuditLogPage() {
     setExporting(true)
     try {
       downloadCsv(
-        `roundwise-audit-${todayInput()}.csv`,
+        `psg-interviewshare-audit-${todayInput()}.csv`,
         ['id', 'created_at', 'actor_id', 'actor_name', 'action', 'action_label', 'entity', 'entity_id', 'summary', 'metadata'],
         rows.map((a) => [a.id, a.created_at, a.actor_id, a.actor_name, a.action, auditLabel(a.action), a.entity, a.entity_id, auditSummary(a), a.metadata]),
       )

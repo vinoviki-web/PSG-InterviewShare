@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0250 · RPCs (the only write path for experiences,
+-- PSG InterviewShare · 0250 · RPCs (the only write path for experiences,
 -- reports, moderation and admin operations)
 -- Errors: SQLSTATE P0001, DETAIL = stable code, HINT = JSON field errors
 -- for 'validation'. The client maps these to ApiError (src/api/client.js).

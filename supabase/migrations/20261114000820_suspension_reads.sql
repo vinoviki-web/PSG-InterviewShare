@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0820 · Suspension means no reading at all (Phase 9 fix)
+-- PSG InterviewShare · 0820 · Suspension means no reading at all (Phase 9 fix)
 -- Found by the live admin test: a suspended student could still read their
 -- OWN published posts through the feed, because the "own rows" branches
 -- only required a PSG account. They now require an active (onboarded,

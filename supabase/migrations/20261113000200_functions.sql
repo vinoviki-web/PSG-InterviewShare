@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0200 · Helper functions, auth hooks, triggers
+-- PSG InterviewShare · 0200 · Helper functions, auth hooks, triggers
 -- Every SECURITY DEFINER function pins search_path = '' and schema-
 -- qualifies every object, so a caller can't hijack resolution.
 -- =====================================================================

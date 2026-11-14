@@ -56,6 +56,44 @@ select is(
    where n.nspname = 'public' and c.relkind = 'v' and not coalesce('security_barrier=true' = any (c.reloptions), false)),
   '', 'every public view is a security barrier');
 
+-- Access rules evaluate auth.uid() once per query, not per row (migration 0920)
+select is(
+  (select coalesce(string_agg(tablename || '.' || policyname, ', '), '') from pg_policies
+   where schemaname = 'public'
+     and regexp_replace(coalesce(qual, '') || ' ' || coalesce(with_check, ''), 'SELECT auth\.uid\(\)', '', 'g') ~ 'auth\.uid\(\)'),
+  '', 'no access rule calls auth.uid() per row');
+
+-- Reference data: everyone signed in reads, only admins write (rules split in 0920)
+create temp table ref_ids (k text primary key, v uuid);
+insert into ref_ids values ('student', pg_temp.make_user('22z931@psgtech.ac.in', 'Ref Student')),
+                           ('admin',   pg_temp.make_user('22z932@psgtech.ac.in', 'Ref Admin'));
+insert into user_roles (user_id, role) select v, 'admin' from ref_ids where k = 'admin';
+grant select on ref_ids to authenticated;
+-- Rows changed by a write, run as the current role (RLS hides rows rather than erroring).
+create function pg_temp.affected(p_sql text) returns bigint language plpgsql as $$
+declare v bigint;
+begin
+  execute p_sql;
+  get diagnostics v = row_count;
+  return v;
+end $$;
+
+select pg_temp.login((select v from ref_ids where k = 'student'));
+select ok(pg_temp.n('select 1 from departments') > 0 and pg_temp.n('select 1 from topics') > 0, 'students read departments and topics');
+select is(pg_temp.err($$insert into departments (id, code, name, degree) values ('zz-test', 'ZZ', 'Test', 'BE')$$), '42501', 'students can’t add departments');
+select is(pg_temp.affected($$update departments set name = 'Hacked' where id = 'cse'$$), 0::bigint, 'students can’t rename departments');
+select is(pg_temp.affected($$delete from topics$$), 0::bigint, 'students can’t delete topics');
+
+select pg_temp.login((select v from ref_ids where k = 'admin'));
+select is(pg_temp.err($$insert into departments (id, code, name, degree) values ('zz-test', 'ZZ', 'Test', 'BE')$$), 'ok', 'admins can add departments');
+select is(pg_temp.affected($$update departments set name = 'Test 2' where id = 'zz-test'$$), 1::bigint, 'admins can rename departments');
+select is(pg_temp.affected($$delete from departments where id = 'zz-test'$$), 1::bigint, 'admins can delete departments');
+select pg_temp.logout();
+
+select pg_temp.anon();
+select is(pg_temp.err('select 1 from departments'), '42501', 'visitors can’t read departments');
+select pg_temp.logout();
+
 -- Storage
 select ok((select not public from storage.buckets where id = 'avatars'), 'the avatars bucket is private');
 select ok((select allowed_mime_types = array['image/png', 'image/jpeg', 'image/webp'] from storage.buckets where id = 'avatars'), 'avatar uploads are limited to PNG, JPEG and WebP');

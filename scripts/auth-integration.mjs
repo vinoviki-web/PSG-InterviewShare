@@ -16,7 +16,7 @@ const env = Object.fromEntries(
     .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]),
 )
 const URL_ = env.VITE_SUPABASE_URL
-const ANON = env.VITE_SUPABASE_ANON_KEY
+const ANON = env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY
 const MAILPIT = process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324'
 if (!/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(URL_)) {
   console.error(`Refusing to run against ${URL_}: local stack only.`)
@@ -59,7 +59,7 @@ async function signInWithCode(c, email) {
   return { session: data.session, mail }
 }
 
-console.log(`Roundwise live auth test · ${URL_}\n`)
+console.log(`PSG InterviewShare live auth test · ${URL_}\n`)
 
 // ---------------------------------------------------------------- domain
 {
@@ -86,7 +86,7 @@ let sessionA
   check(!error, 'a PSG address can request a sign-in code', error?.message)
   const mail = await codeFor(email, before)
   check(/^\d{6}$/.test(mail.code ?? ''), 'a 6-digit code arrives by email (Mailpit)', JSON.stringify(mail.subject))
-  check(mail.subject === 'Your Roundwise sign-in code', 'the email uses the Roundwise template', mail.subject)
+  check(mail.subject === 'Your PSG InterviewShare sign-in code', 'the email uses the PSG InterviewShare template', mail.subject)
   check(!/href=|token_hash|verify\?/i.test(mail.html ?? ''), 'the email contains a code, not a sign-in link')
 
   const { error: again } = await A.auth.signInWithOtp({ email, options: { shouldCreateUser: true } })
@@ -159,6 +159,14 @@ let sessionA
   check(!!gone, 'the deleted user’s token no longer resolves to a user', 'still exists')
   const noAuth = await fetch(`${URL_}/functions/v1/delete-account`, { method: 'POST', headers: { apikey: ANON, 'Content-Type': 'application/json' }, body: '{}' })
   check(noAuth.status === 401, 'the Edge Function refuses calls without a signed-in user', `HTTP ${noAuth.status}`)
+  // verify_jwt is off (LA7), so the function's own check must reject anything that isn't a live session.
+  const fnCall = (bearer) => fetch(`${URL_}/functions/v1/delete-account`, {
+    method: 'POST', headers: { apikey: ANON, Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json' }, body: '{}',
+  }).then((r) => r.status)
+  const forged = ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9', btoa(JSON.stringify({ sub: crypto.randomUUID(), role: 'authenticated' })).replace(/=+$/, ''), 'forged'].join('.')
+  check((await fnCall(forged)) === 401, 'the Edge Function refuses a forged token')
+  check((await fnCall(ANON)) === 401, 'the Edge Function refuses the public key used as a token')
+  check((await fnCall(session.access_token)) === 401, 'the Edge Function refuses the deleted user’s old token')
 }
 
 console.log(`\n${passed} passed, ${failed} failed`)

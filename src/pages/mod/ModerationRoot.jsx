@@ -64,7 +64,7 @@ export default function ModerationRoot() {
   const counts = lastCounts.current
 
   useEffect(() => {
-    document.title = 'Moderation · Roundwise'
+    document.title = 'Moderation · PSG InterviewShare'
   }, [])
 
   const update = (patch) =>

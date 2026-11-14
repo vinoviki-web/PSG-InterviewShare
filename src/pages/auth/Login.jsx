@@ -182,7 +182,7 @@ export default function Login() {
           </div>
           {showHelp && (
             <p className="mt-5 rounded-md bg-ink-50 p-3 text-small text-ink-600">
-              Didn’t get it? Check Spam and Promotions. Codes come from no-reply@roundwise.app and expire after 10 minutes.
+              Didn’t get it? Check Spam and Promotions. Codes come from “PSG InterviewShare” and expire after 10 minutes.
             </p>
           )}
         </>

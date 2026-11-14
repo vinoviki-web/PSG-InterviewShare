@@ -44,6 +44,11 @@ export async function signInUI(page, local) {
 /** Fails with a readable list if axe finds WCAG 2.1 A/AA violations. */
 export async function expectAccessible(page, name) {
   await page.waitForLoadState('networkidle')
+  // Let enter animations finish: mid-fade text reads as low contrast.
+  // (Looping animations such as loading pulses never finish, so skip those.)
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter((a) => Number.isFinite(a.effect?.getComputedTiming().endTime))
+    .map((a) => a.finished.catch(() => {}))))
   const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
   const summary = violations.map((v) => `${v.id} (${v.impact}): ${v.help} → ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join(' | ')}`)
   expect(summary, `${name}: accessibility violations`).toEqual([])

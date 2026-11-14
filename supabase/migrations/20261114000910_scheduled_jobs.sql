@@ -87,4 +87,4 @@ revoke all on function public._run_maintenance() from public, anon, authenticate
 
 -- Nightly at 03:17 IST (21:47 UTC). cron.schedule upserts by name, so
 -- re-running this migration is harmless.
-select cron.schedule('roundwise-maintenance', '47 21 * * *', 'select public._run_maintenance()');
+select cron.schedule('interviewshare-maintenance', '47 21 * * *', 'select public._run_maintenance()');

@@ -9,7 +9,7 @@ const env = Object.fromEntries(
     .map((l) => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]),
 )
 export const API_URL = env.VITE_SUPABASE_URL
-export const ANON_KEY = env.VITE_SUPABASE_ANON_KEY
+export const ANON_KEY = env.VITE_SUPABASE_PUBLISHABLE_KEY || env.VITE_SUPABASE_ANON_KEY
 export const MAILPIT = process.env.MAILPIT_URL ?? 'http://127.0.0.1:54324'
 if (!/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(API_URL)) {
   console.error(`Refusing to run against ${API_URL}: local stack only.`)

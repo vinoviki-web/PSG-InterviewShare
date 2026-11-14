@@ -1,10 +1,32 @@
-// Roundwise · Edge Function `delete-account` (D14)
+// PSG InterviewShare · Edge Function `delete-account` (D14)
 // 1. Identify the caller from their JWT (never from the request body).
 // 2. As the caller: prepare_account_deletion(mode) anonymises/removes content
 //    (same RLS + audit as any RPC).
 // 3. As the service role: remove avatar files, then delete the auth user.
-// The service-role key exists only in the Edge Function environment.
+// The secret key exists only in the Edge Function environment.
+//
+// Deployed with verify_jwt = false (DECISIONS LA7): the platform's built-in
+// check only understands the legacy JWT keys, which Supabase retires at the
+// end of 2026. Step 1 below is the real check: getUser() asks the Auth
+// server whether the caller's session is valid, and nothing happens without it.
 import { createClient } from 'npm:@supabase/supabase-js@2.119.0'
+
+/** New-style key ("default" from the JSON map Supabase injects), else the legacy key. */
+function key(kind: 'publishable' | 'secret'): string {
+  const map = Deno.env.get(kind === 'publishable' ? 'SUPABASE_PUBLISHABLE_KEYS' : 'SUPABASE_SECRET_KEYS')
+  if (map) {
+    try {
+      const keys = JSON.parse(map) as Record<string, string>
+      const value = keys.default ?? Object.values(keys)[0]
+      if (value) return value
+    } catch {
+      /* fall through to the legacy key */
+    }
+  }
+  const legacy = Deno.env.get(kind === 'publishable' ? 'SUPABASE_ANON_KEY' : 'SUPABASE_SERVICE_ROLE_KEY')
+  if (!legacy) throw new Error(`No ${kind} key in the function environment`)
+  return legacy
+}
 
 const ALLOWED_ORIGINS = (Deno.env.get('ALLOWED_ORIGINS') ?? 'http://localhost:5173,http://127.0.0.1:5173').split(',')
 
@@ -38,7 +60,7 @@ Deno.serve(async (req) => {
   }
 
   const url = Deno.env.get('SUPABASE_URL')!
-  const asUser = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, {
+  const asUser = createClient(url, key('publishable'), {
     global: { headers: { Authorization: authHeader } },
     auth: { persistSession: false, autoRefreshToken: false },
   })
@@ -52,7 +74,7 @@ Deno.serve(async (req) => {
     return json({ code: rpcErr.details || 'error', message: rpcErr.message }, status, headers)
   }
 
-  const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false, autoRefreshToken: false } })
+  const admin = createClient(url, key('secret'), { auth: { persistSession: false, autoRefreshToken: false } })
   const { data: files } = await admin.storage.from('avatars').list(user.id)
   if (files?.length) await admin.storage.from('avatars').remove(files.map((f) => `${user.id}/${f.name}`))
 

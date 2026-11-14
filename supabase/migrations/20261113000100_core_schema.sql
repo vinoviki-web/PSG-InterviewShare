@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0100 · Core schema
+-- PSG InterviewShare · 0100 · Core schema
 -- Tables, enums, constraints, indexes. Security (RLS, grants) lives in
 -- 0300; behaviour (functions, triggers, RPCs) in 0200.
 -- Spec: docs/01-product-discovery.md §9, docs/DECISIONS.md

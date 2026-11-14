@@ -173,7 +173,7 @@ export default function Overview() {
 
   return (
     <>
-      <PageHeader title="Overview" description="How Roundwise is doing. Every number is counted from live data." />
+      <PageHeader title="Overview" description="How PSG InterviewShare is doing. Every number is counted from live data." />
       <FetchingBar active={isFetching && !isPending} />
       {isPending ? (
         <OverviewSkeleton />

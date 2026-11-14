@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0500 · Share wizard on the real database (Phase 5)
+-- PSG InterviewShare · 0500 · Share wizard on the real database (Phase 5)
 -- Aligns the write path with the wizard's contract (src/api/drafts.js):
 --   * company by slug (merged companies resolve to their target)
 --   * draft_max_step, duplicate_of, `confirmed` alias

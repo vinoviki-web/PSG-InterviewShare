@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0700 · Companies (Phase 7)
+-- PSG InterviewShare · 0700 · Companies (Phase 7)
 -- All functions are SECURITY INVOKER and read from experience_feed /
 -- RLS-protected tables, so every visibility rule (published only,
 -- anonymity, suspension, PSG-only) applies automatically. Aggregates

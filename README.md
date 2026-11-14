@@ -1,8 +1,10 @@
-# Roundwise (working name)
+# PSG InterviewShare
 
-PSG College of Technology–only platform for sharing and exploring real interview experiences.
+A platform for PSG College of Technology students to share and explore real interview experiences.
 
-> **Status:** Phase 10 complete: **ready to launch once the production accounts exist.** The whole app runs on the real Supabase database: college-email sign-in, profiles, sharing, browsing, search, companies, comments, reporting, moderation and admin (docs [04](docs/04-auth-and-profiles.md)–[09](docs/09-moderation-and-admin.md)). Launch hardening, the go-live runbook and what's needed from the owner: [docs/10](docs/10-launch.md).
+> **Independent student project.** Not affiliated with or endorsed by PSG College of Technology or its placement cell.
+
+> **Status:** Phase 10 complete and audited: **ready to deploy on free plans (₹0)** following [docs/10](docs/10-launch.md). The whole app runs on the real Supabase database: college-email sign-in, profiles, sharing, browsing, search, companies, comments, reporting, moderation and admin (docs [04](docs/04-auth-and-profiles.md)–[09](docs/09-moderation-and-admin.md)). Launch hardening, the go-live runbook and what's needed from the owner: [docs/10](docs/10-launch.md).
 
 ## Database (Phase 3)
 
@@ -18,7 +20,7 @@ See [docs/03-database-and-security.md](docs/03-database-and-security.md).
 
 ```bash
 npm run db:start                     # local Supabase + Mailpit + Edge Functions
-npx supabase status                  # copy API URL + anon key into .env.db.local (see .env.example)
+npx supabase status                  # copy API URL + publishable key into .env.db.local (see .env.example)
 npm run dev:db                       # app in database mode (http://localhost:5173)
 npm run test:auth                    # live sign-in integration test
 npm run test:wizard                  # live share-wizard integration test
@@ -60,7 +62,7 @@ Sign-in is college email only (D19): enter any `@psgtech.ac.in` address, then th
 | [docs/07-companies.md](docs/07-companies.md) | Company directory, pages, insights, questions, trending on the database |
 | [docs/08-comments-and-reports.md](docs/08-comments-and-reports.md) | Comments, replies and reporting on the database |
 | [docs/09-moderation-and-admin.md](docs/09-moderation-and-admin.md) | Moderation queue, admin area, audit, settings on the database |
-| [docs/10-launch.md](docs/10-launch.md) | Launch hardening, test totals, go-live runbook, backups, what the owner must provide |
+| [docs/10-launch.md](docs/10-launch.md) | Launch hardening, test totals, free-tier limits, the ₹0 deployment runbook, backups |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Approved decisions, open questions, action items |
 
 ## Structure

@@ -122,6 +122,21 @@ function TopNav({ onSearch }) {
   )
 }
 
+/** Small print on every signed-in page: this is not an official college service. */
+function AppFooter() {
+  return (
+    <footer className="container-page mt-12 flex flex-col gap-2 border-t border-ink-200 pt-6 text-caption text-ink-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>An independent student project. Not affiliated with or endorsed by PSG College of Technology.</p>
+      <nav className="flex flex-wrap gap-x-4 gap-y-1" aria-label="Footer">
+        <Link to="/about" className="hover:text-ink-900">About</Link>
+        <Link to="/guidelines" className="hover:text-ink-900">Guidelines</Link>
+        <Link to="/privacy" className="hover:text-ink-900">Privacy</Link>
+        <Link to="/terms" className="hover:text-ink-900">Terms</Link>
+      </nav>
+    </footer>
+  )
+}
+
 function BottomNav() {
   const items = [
     NAV[0],
@@ -218,6 +233,7 @@ export function AppShell() {
         <Suspense fallback={<PageFallback />}>
           <Outlet />
         </Suspense>
+        {!hideBottom && <AppFooter />}
       </main>
       {!hideBottom && <BottomNav />}
       <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />

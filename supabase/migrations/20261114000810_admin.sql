@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0810 · Admin on the real database (Phase 9, part 2)
+-- PSG InterviewShare · 0810 · Admin on the real database (Phase 9, part 2)
 -- Shapes match the prototype's src/api/admin.js. Admin-only, audited,
 -- and D7-safe: no admin view reveals an anonymous author except
 -- admin_unmask (reason required, audited).

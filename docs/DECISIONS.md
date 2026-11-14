@@ -137,17 +137,22 @@ Details: [10-launch.md](10-launch.md)
 | LA3 | Housekeeping runs nightly in the database (pg_cron → `_run_maintenance()`), not in an external scheduler: 30-day purge of removed/deleted content (hidden content kept), 90-day draft expiry with a 7-day warning, suspension lifting, 180-day read-notification pruning. One System audit row per run that changed something. |
 | LA4 | Browser tests run against the real database-mode app, not the prototype, and every main page must pass axe WCAG 2.1 AA. Muted text uses `ink-500` (4.9:1); `ink-400` is for borders and icons only. |
 | LA5 | Backups are weekly, logical (roles, schema, data) and always encrypted, because they contain student emails. Kept 30 days in GitHub, plus a monthly copy with the placement cell. |
-| LA6 | Security headers live in `vercel.json`. CSP keeps scripts same-origin and allows network only to `*.supabase.co`; inline styles are allowed for Radix positioning. |
+| LA6 | Security headers live in `vercel.json`. CSP keeps scripts same-origin and allows network only to `*.supabase.co`; inline styles are allowed for Radix positioning. No HSTS `preload` (a `vercel.app` subdomain can't be preloaded). |
+| LA7 | Supabase's new key types: the site uses the publishable key (legacy anon key accepted as fallback); the account-deletion function reads `SUPABASE_SECRET_KEYS` (legacy service-role fallback) and runs with `verify_jwt = false`, because the platform check only understands legacy keys. The function's own `getUser()` check is the gate; live tests prove it refuses missing, forged, public-key and deleted-user tokens. Allowed callers come from the `ALLOWED_ORIGINS` secret. |
+| LA8 | Any Vercel build without `VITE_DATA_SOURCE=supabase` fails, so the prototype (demo sign-in code) can never be deployed by mistake. `VITE_PROTOTYPE=1` is the explicit opt-out for a hosted prototype demo. |
+| LA9 | Access rules evaluate `auth.uid()` and role helpers once per query (`(select …)`), admin write rules are split per action, and every foreign key is indexed (migration 0920, from Supabase's advisor). The 3 security-definer views stay by design (masking, D7) and are covered by test 12. |
+| LA10 | **₹0 hosting** (owner decision, 2026-11-14): Supabase Free (Mumbai), Vercel Hobby on the free `vercel.app` address, no custom domain, no paid add-ons or AI APIs. Sign-in codes go through a dedicated Gmail account over SMTP (app password), capped at 20 emails/hour, because free transactional providers need a verified domain. Backups are the weekly encrypted GitHub workflow. No upgrade without the owner's explicit approval. |
+| LA11 | **Independent student project** (owner decision): name *PSG InterviewShare*; no PSG logo or claim of endorsement; "independent student project, not affiliated with or endorsed by PSG College of Technology" on every page, About, Terms and the sign-in email. Official branding only after placement-cell permission (A2). |
 
 ## Open questions (❓)
 | ID | Question | Recommendation |
 |---|---|---|
-| Q13 | Final product name? Options: **Roundwise**, Placement Ledger, Offer Notes, PrepTrail | Roundwise (round-by-round, short, ownable) |
+| Q13 | ✅ Resolved 2026-11-14: **PSG InterviewShare** (owner's choice). Note: the reference site is titled "InterviewShare"; see A1. | — |
 
 ## Action items (📌)
 | ID | Item | Owner |
 |---|---|---|
-| A1 | Contact the maintainer of interview-share.vercel.app about collaboration before launch. Never copy their content. | Product owner |
-| A2 | Ask the placement cell about using the PSG name and logo, and about moderator nominations | Product owner |
-| A3 | Choose an email provider and sending domain for sign-in codes, with SPF/DKIM set up so codes reach @psgtech.ac.in inboxes (now the only sign-in path, D19). Locally, codes go to Mailpit. | Product owner + Claude |
+| A1 | Contact the maintainer of interview-share.vercel.app (titled "InterviewShare") before launch: the names are close, so explain the project and avoid confusion. Never copy their content. | Product owner |
+| A2 | Later, with a working demo: ask the placement cell about official recognition, branding and moderator nominations. Until then the project stays independent (LA11). | Product owner |
+| A3 | ✅ Decided (LA10): a dedicated Gmail account sends codes over SMTP; no domain. Revisit if volume outgrows ~480 emails/day. | Product owner |
 | A4 | Verify the department/programme list (migration `20261114000900_reference_data.sql`, 21 entries) against PSG Tech’s official list before launch | Product owner |

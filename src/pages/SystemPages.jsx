@@ -9,7 +9,7 @@ import { formatDate } from '@/lib/utils'
 export function FullPageLoader() {
   return (
     <div className="flex min-h-dvh items-center justify-center">
-      <Spinner label="Loading Roundwise" />
+      <Spinner label="Loading PSG InterviewShare" />
     </div>
   )
 }

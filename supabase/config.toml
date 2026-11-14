@@ -256,11 +256,11 @@ otp_expiry = 600
 # Sign-in code emails (D19). New students get the "confirmation" template on
 # their first code; returning students get "magic_link". Both send a CODE.
 [auth.email.template.confirmation]
-subject = "Your Roundwise sign-in code"
+subject = "Your PSG InterviewShare sign-in code"
 content_path = "./supabase/templates/sign-in-code.html"
 
 [auth.email.template.magic_link]
-subject = "Your Roundwise sign-in code"
+subject = "Your PSG InterviewShare sign-in code"
 content_path = "./supabase/templates/sign-in-code.html"
 
 # Uncomment to customize email template
@@ -441,5 +441,6 @@ enabled = true
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
 
 [functions.delete-account]
-# The function verifies the caller's JWT itself (getUser) before doing anything.
-verify_jwt = true
+# Off on purpose (DECISIONS LA7): the platform check only understands legacy
+# JWT keys. The function verifies the caller itself (getUser) before doing anything.
+verify_jwt = false

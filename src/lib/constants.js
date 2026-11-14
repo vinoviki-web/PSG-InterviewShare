@@ -2,7 +2,7 @@ import {
   MonitorCheck, Calculator, Code2, Cpu, Network, Users, Briefcase, HeartHandshake, CircleDot,
 } from 'lucide-react'
 
-export const APP_NAME = 'Roundwise'
+export const APP_NAME = 'PSG InterviewShare'
 export const PSG_DOMAIN = 'psgtech.ac.in'
 
 /* Mirrors the Postgres enums planned for Phase 3. Keep in sync. */

@@ -51,7 +51,7 @@ export default function Onboarding() {
     onSuccess: async () => {
       await reset()
       qc.invalidateQueries()
-      toast.success('Welcome to Roundwise.')
+      toast.success('Welcome to PSG InterviewShare.')
       navigate(consumeReturnTo() ?? '/home', { replace: true })
     },
     onError: (e) => {

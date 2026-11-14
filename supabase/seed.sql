@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · LOCAL-ONLY seed (supabase db reset). Demo accounts and two
+-- PSG InterviewShare · LOCAL-ONLY seed (supabase db reset). Demo accounts and two
 -- fictional experiences. Reference data (departments, topics, companies)
 -- lives in migration 0900 so production gets it without these fixtures.
 -- =====================================================================

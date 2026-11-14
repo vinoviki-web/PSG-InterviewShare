@@ -73,7 +73,7 @@ export function CommandPalette({ open, onOpenChange }) {
           className="fixed inset-x-0 top-0 z-50 flex max-h-dvh flex-col overflow-hidden bg-white shadow-lg animate-rise outline-none md:left-1/2 md:top-[12vh] md:max-h-[70vh] md:w-[600px] md:-translate-x-1/2 md:rounded-xl md:border md:border-ink-200"
           aria-describedby={undefined}
         >
-          <D.Title className="sr-only">Search Roundwise</D.Title>
+          <D.Title className="sr-only">Search PSG InterviewShare</D.Title>
           <div className="flex items-center gap-3 border-b border-ink-200 px-4">
             <Search className="size-5 shrink-0 text-ink-500" aria-hidden />
             <input

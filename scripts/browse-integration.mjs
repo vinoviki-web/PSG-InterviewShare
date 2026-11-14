@@ -6,7 +6,7 @@
  */
 import { check, finish, onboardedStudent } from './lib.mjs'
 
-console.log('Roundwise live browse test\n')
+console.log('PSG InterviewShare live browse test\n')
 const s = await onboardedStudent('br', 'Browse Student')
 const FEED = 'id, company_slug, company_name, role_title, opportunity_type, outcome, difficulty, department_id, graduation_year, pipeline, topic_ids, helpful_count, view_count, published_at, author_name, author_id, is_anonymous, has_voted, has_saved, status'
 

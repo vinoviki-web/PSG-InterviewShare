@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0400 · Account deletion (D14)
+-- PSG InterviewShare · 0400 · Account deletion (D14)
 -- Step 1 (this RPC, runs as the student): prepare their content.
 --   anonymise → published posts stay, shown as "Former PSG student"
 --   delete    → published posts are removed for everyone

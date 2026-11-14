@@ -4,7 +4,7 @@ begin;
 select no_plan();
 
 -- The job is scheduled and private.
-select ok(exists (select 1 from cron.job where jobname = 'roundwise-maintenance' and command like '%_run_maintenance()%' and active), 'the nightly job is scheduled in pg_cron');
+select ok(exists (select 1 from cron.job where jobname = 'interviewshare-maintenance' and command like '%_run_maintenance()%' and active), 'the nightly job is scheduled in pg_cron');
 select ok(not has_function_privilege('authenticated', 'public._run_maintenance()', 'execute'), 'students can’t run maintenance');
 select ok(not has_function_privilege('anon', 'public._run_maintenance()', 'execute'), 'visitors can’t run maintenance');
 

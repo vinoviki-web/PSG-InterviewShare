@@ -2,18 +2,18 @@ import { Link } from 'react-router'
 
 const PAGES = {
   about: {
-    title: 'About Roundwise',
+    title: 'About PSG InterviewShare',
     lead: 'A student-run knowledge base of real interview experiences, written by PSG Tech students for their juniors.',
     sections: [
-      ['Why it exists', 'Every placement season, the same questions get asked in class groups: what does this company ask, how many rounds, how hard is it? The answers live in scattered chats and disappear every year. Roundwise keeps them, structured by company, round and topic, so each batch starts where the last one left off.'],
-      ['Who runs it', 'Roundwise is built and moderated by PSG Tech students. It is not an official service of PSG College of Technology or its placement cell, and nothing on it is official company information unless it’s explicitly labelled with a source.'],
+      ['Why it exists', 'Every placement season, the same questions get asked in class groups: what does this company ask, how many rounds, how hard is it? The answers live in scattered chats and disappear every year. PSG InterviewShare keeps them, structured by company, round and topic, so each batch starts where the last one left off.'],
+      ['Who runs it', 'PSG InterviewShare is an independent project, built and moderated by PSG Tech students. It is not affiliated with, endorsed by or run by PSG College of Technology or its placement cell, and it doesn’t use the college’s name or logo officially. “PSG” only describes who it is for. Nothing on it is official company information unless it’s explicitly labelled with a source.'],
       ['How moderation works', 'Anyone can report an experience or comment. Content reported by three different students is hidden automatically until a student moderator reviews it. Every moderation and admin action is recorded in an audit log.'],
       ['Contact', 'Questions, corrections or takedown requests: use “Report” on the content, or reach the admins through the Guidelines page. A dedicated contact address will be published before launch.'],
     ],
   },
   guidelines: {
     title: 'Community guidelines',
-    lead: 'Roundwise works because people share honestly. These rules keep it useful and safe.',
+    lead: 'PSG InterviewShare works because people share honestly. These rules keep it useful and safe.',
     sections: [
       ['Share', 'Your own interview experience: the process, the kinds of questions, how you prepared, and honest advice. Rejections are as valuable as offers.'],
       ['Don’t share', 'Confidential test content you agreed not to disclose, personal details or insults about interviewers or other candidates, experiences that aren’t yours, or anything misleading.'],
@@ -23,7 +23,7 @@ const PAGES = {
   },
   privacy: {
     title: 'Privacy',
-    lead: 'We collect the minimum needed to keep Roundwise PSG-only and useful.',
+    lead: 'We collect the minimum needed to keep PSG InterviewShare PSG-only and useful.',
     sections: [
       ['What we collect', 'Your PSG email (to verify you’re a student; never shown to others), name, department, batch, an optional photo, optional interests, and what you choose to post. We don’t collect roll numbers, phone numbers or compensation details.'],
       ['Who sees what', 'Students see your name, department and batch on experiences you post under your name. Anonymous posts show neither. Your saved list, drafts and reading history are visible only to you.'],
@@ -32,11 +32,12 @@ const PAGES = {
   },
   terms: {
     title: 'Terms',
-    lead: 'Plain-language terms for using Roundwise.',
+    lead: 'Plain-language terms for using PSG InterviewShare.',
     sections: [
-      ['Your content', 'You keep ownership of what you post. By posting, you allow Roundwise to display it to verified PSG students.'],
+      ['Your content', 'You keep ownership of what you post. By posting, you allow PSG InterviewShare to display it to verified PSG students.'],
       ['No guarantees', 'Experiences are personal accounts. Processes and questions change, so use them as preparation material, not as a promise of what will happen.'],
       ['Access', 'Access is limited to verified PSG Tech students and may be suspended for breaking the community guidelines.'],
+      ['Independent project', 'PSG InterviewShare is an independent student project. It is not affiliated with, endorsed by or operated by PSG College of Technology or its placement cell.'],
     ],
   },
 }

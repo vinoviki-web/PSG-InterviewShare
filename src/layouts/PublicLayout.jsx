@@ -27,7 +27,7 @@ export function PublicFooter() {
   return (
     <footer className="border-t border-ink-200 bg-white">
       <div className="container-page flex flex-col gap-4 py-8 text-small text-ink-500 sm:flex-row sm:items-center sm:justify-between">
-        <p>Built by PSG students, for PSG students. Not an official PSG College of Technology service.</p>
+        <p>Built by PSG students, for PSG students. An independent project, not affiliated with or endorsed by PSG College of Technology.</p>
         <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
           <Link to="/about" className="hover:text-ink-900">About</Link>
           <Link to="/guidelines" className="hover:text-ink-900">Guidelines</Link>

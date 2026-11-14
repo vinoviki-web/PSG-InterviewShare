@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0600 · Search for the explorer (Phase 6)
+-- PSG InterviewShare · 0600 · Search for the explorer (Phase 6)
 -- The search_vector mixes 'simple' (company, aliases, role, topics) and
 -- 'english' (questions, narrative) lexemes, so the query matches each word
 -- as a PREFIX in both configurations: "fresh" → Freshworks, "anagram" →

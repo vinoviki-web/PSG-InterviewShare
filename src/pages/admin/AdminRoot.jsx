@@ -110,7 +110,7 @@ export default function AdminRoot() {
   const loc = useLocation()
   useEffect(() => {
     const seg = loc.pathname.replace(/^\/admin\/?/, '').split('/')[0]
-    document.title = `${TITLES[seg] ?? 'Admin'} · Admin · Roundwise`
+    document.title = `${TITLES[seg] ?? 'Admin'} · Admin · PSG InterviewShare`
   }, [loc.pathname])
 
   return (

@@ -64,7 +64,7 @@ function ProfileForm() {
       <Controller control={control} name="avatar_url" render={({ field }) => <AvatarPicker name={watch('full_name')} value={field.value} onChange={(v) => field.onChange(v)} />} />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Full name" error={errors.full_name?.message}><Input {...register('full_name')} autoComplete="name" /></Field>
-        <Field label="Profile link" error={errors.handle?.message} hint="roundwise.app/u/your-handle">
+        <Field label="Profile link" error={errors.handle?.message} hint={`${window.location.host}/u/your-handle`}>
           <Input {...register('handle')} prefix={<span className="text-small">/u/</span>} autoCapitalize="none" spellCheck={false} />
         </Field>
         <Field label="Department" error={errors.department_id?.message}>
@@ -137,7 +137,7 @@ function AccountSettings() {
     mutationFn: exportMyData,
     onSuccess: (data) => {
       const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
-      const a = Object.assign(document.createElement('a'), { href: url, download: `roundwise-data-${new Date().toISOString().slice(0, 10)}.json` })
+      const a = Object.assign(document.createElement('a'), { href: url, download: `psg-interviewshare-data-${new Date().toISOString().slice(0, 10)}.json` })
       a.click()
       URL.revokeObjectURL(url)
       toast.success('Your data was downloaded.')

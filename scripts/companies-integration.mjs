@@ -6,7 +6,7 @@
  */
 import { check, finish, onboardedStudent } from './lib.mjs'
 
-console.log('Roundwise live companies test\n')
+console.log('PSG InterviewShare live companies test\n')
 const s = await onboardedStudent('co', 'Company Student')
 const rpc = async (fn, args) => {
   const { data, error } = await s.rpc(fn, args)

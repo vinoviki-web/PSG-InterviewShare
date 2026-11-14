@@ -6,7 +6,7 @@
  */
 import { check, finish, onboardedStudent } from './lib.mjs'
 
-console.log('Roundwise live community test\n')
+console.log('PSG InterviewShare live community test\n')
 const [author, r1, r2, r3, r4] = await Promise.all([
   onboardedStudent('ca', 'Comm Author'),
   onboardedStudent('c1', 'Reader One'),

@@ -7,7 +7,7 @@
  */
 import { check, finish, onboardedStudent, stamp } from './lib.mjs'
 
-console.log('Roundwise live share-wizard test\n')
+console.log('PSG InterviewShare live share-wizard test\n')
 
 const alice = await onboardedStudent('wa', 'Wizard Alice')
 const bob = await onboardedStudent('wb', 'Wizard Bob', 'it', 2026)

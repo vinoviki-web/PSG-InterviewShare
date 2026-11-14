@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0300 · Security: RLS, grants, masked views, storage
+-- PSG InterviewShare · 0300 · Security: RLS, grants, masked views, storage
 -- Default deny everywhere. Strategy: docs/01-product-discovery.md §10
 --
 -- Read model

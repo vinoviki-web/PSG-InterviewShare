@@ -297,7 +297,7 @@ function mock_setUserRole(id, role) {
    Companies
    ====================================================================== */
 export const DESCRIPTION_SOURCES = [
-  { value: 'admin_curated', label: 'Written by the Roundwise team' },
+  { value: 'admin_curated', label: 'Written by the PSG InterviewShare team' },
   { value: 'company_website', label: 'Company website' },
   { value: 'student_submitted', label: 'Student-submitted' },
 ]

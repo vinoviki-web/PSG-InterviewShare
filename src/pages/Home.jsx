@@ -81,7 +81,7 @@ export default function Home() {
         <div className="min-w-0 space-y-10">
           <Section
             query={latest}
-            title="New on Roundwise"
+            title="New on PSG InterviewShare"
             action={<Link to="/experiences" className="inline-flex items-center gap-1 text-body font-medium text-teal-700 hover:underline">See all <ArrowRight className="size-4" /></Link>}
             skeleton={<div className="space-y-3">{[0, 1, 2].map((i) => <ExperienceRowSkeleton key={i} />)}</div>}
             empty={latest.data?.items.length === 0 && (

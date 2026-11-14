@@ -1,5 +1,5 @@
 -- =====================================================================
--- Roundwise · 0800 · Moderation on the real database (Phase 9, part 1)
+-- PSG InterviewShare · 0800 · Moderation on the real database (Phase 9, part 1)
 -- Returns the exact shapes of the prototype's src/api/moderation.js.
 -- Every function is SECURITY DEFINER with an explicit role check, writes
 -- moderation_actions (with a before-snapshot for Undo) and audit_logs,
