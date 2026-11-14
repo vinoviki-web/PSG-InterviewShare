@@ -91,11 +91,13 @@ The code is open source; nothing secret is in it, and every rule is enforced by 
 - Card: none for Free. If anything asks for one, stop. **Check:** the project dashboard opens and shows *Free*.
 
 ### Step 4 · Database, function and its secret (together)
-In this folder, in your own terminal (the login opens your browser):
+In this folder, in your own terminal (the login opens your browser). **Supabase CLI 3 targets the local stack by default: every command that should reach the project needs `--remote`.**
 ```bash
 npx supabase login
-npx supabase link --project-ref <project-ref>        # from the project URL; asks for the database password
-npx supabase db push                                 # migrations only; demo seed files are NEVER pushed
+npx supabase link --project-ref <project-ref>        # from the project URL
+npx supabase migration list --remote                 # what the project already has (read-only)
+npx supabase db push --remote --dry-run              # what would be applied (changes nothing)
+npx supabase db push --remote                        # migrations only; demo seed files are NEVER pushed
 npx supabase functions deploy delete-account --no-verify-jwt
 npx supabase secrets set ALLOWED_ORIGINS=https://<your-project>.vercel.app   # placeholder now, final value in step 7
 ```
@@ -170,7 +172,7 @@ npx supabase secrets set ALLOWED_ORIGINS=https://<your-project>.vercel.app   # p
 |---|---|
 | Nightly (automatic) | Housekeeping job; runs that changed something appear in the audit log as *System · system.maintenance* |
 | Weekly (automatic) | Encrypted backup. Download one a month to Google Drive. If GitHub says the schedule was disabled after 60 quiet days, re-enable it. |
-| Every change | GitHub tests must pass. Database changes go in a new migration, then `npx supabase db push`. |
+| Every change | GitHub tests must pass. Database changes go in a new migration, then `npx supabase db push --remote` (after a `--dry-run`). |
 | After a quiet week | If Supabase paused the project, click **Restore** in the dashboard. |
 | Each semester | Review moderators, check the department list, run a restore drill |
 | Later | Approach the placement cell with the working site about official recognition and moderators (A2). Only then consider official branding. |
