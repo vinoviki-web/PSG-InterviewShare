@@ -1,0 +1,25 @@
+# Weekly encrypted production backup (DECISIONS LA5). Needs two repository
+# secrets: SUPABASE_DB_URL and BACKUP_PASSPHRASE. Kept 30 days as an artifact;
+# also download one each month to the placement cell's drive.
+name: Weekly backup
+on:
+  schedule:
+    - cron: '30 20 * * 0'   # Sunday 20:30 UTC = Monday 02:00 IST
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: supabase/setup-cli@v1
+        with: { version: 3.1.0 }
+      - run: bash scripts/backup.sh
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      - uses: actions/upload-artifact@v4
+        with: { name: backup, path: backups, retention-days: 30 }

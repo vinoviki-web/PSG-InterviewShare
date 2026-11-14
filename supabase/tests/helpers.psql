@@ -1,0 +1,82 @@
+-- Shared pgTAP helpers, included by every test with \ir helpers.psql
+-- Each test file runs in one transaction and rolls back at the end.
+create extension if not exists pgtap with schema extensions;
+set search_path = public, extensions;
+
+-- Create a verified user (as postgres). onboard=false leaves the profile bare.
+create function pg_temp.make_user(p_email text, p_name text default 'Test Student', p_dept text default 'cse',
+                                  p_year smallint default 2026, p_onboard boolean default true)
+returns uuid language plpgsql as $$
+declare v_id uuid := gen_random_uuid();
+begin
+  insert into auth.users (instance_id, id, aud, role, email, email_confirmed_at, raw_user_meta_data, created_at, updated_at)
+  values ('00000000-0000-0000-0000-000000000000', v_id, 'authenticated', 'authenticated', p_email, now(),
+          jsonb_build_object('full_name', p_name), now(), now());
+  if p_onboard then
+    update public.profiles set full_name = p_name, department_id = p_dept, graduation_year = p_year,
+      handle = 'h-' || left(replace(v_id::text, '-', ''), 12), onboarded_at = now()
+    where id = v_id;
+  end if;
+  return v_id;
+end $$;
+
+-- Act as a signed-in user: JWT claims + the authenticated role (like PostgREST).
+create function pg_temp.login(p_id uuid) returns void language plpgsql as $$
+begin
+  perform set_config('role', 'postgres', true);  -- switching user: drop the previous role first
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', p_id, 'role', 'authenticated', 'email', (select email from auth.users where id = p_id))::text, true);
+  perform set_config('role', 'authenticated', true);
+end $$;
+
+-- Act as an anonymous visitor.
+create function pg_temp.anon() returns void language plpgsql as $$
+begin
+  perform set_config('request.jwt.claims', '{"role":"anon"}', true);
+  perform set_config('role', 'anon', true);
+end $$;
+
+-- Back to the test runner (postgres).
+create function pg_temp.logout() returns void language plpgsql as $$
+begin
+  perform set_config('role', 'postgres', true);
+  perform set_config('request.jwt.claims', '', true);
+end $$;
+
+-- Run SQL; return 'ok', the app error code (DETAIL of P0001), or the SQLSTATE.
+create function pg_temp.err(p_sql text) returns text language plpgsql as $$
+declare v_detail text; v_state text;
+begin
+  execute p_sql;
+  return 'ok';
+exception when others then
+  get stacked diagnostics v_detail = pg_exception_detail, v_state = returned_sqlstate;
+  return case when v_state = 'P0001' then v_detail else v_state end;
+end $$;
+
+-- Row count of any query, run as the current role.
+create function pg_temp.n(p_sql text) returns bigint language plpgsql as $$
+declare v bigint;
+begin
+  execute 'select count(*) from (' || p_sql || ') x' into v;
+  return v;
+end $$;
+
+-- A complete, publishable wizard payload.
+create function pg_temp.payload(p_company text default 'amazon', p_role text default 'SDE Intern', p_extra jsonb default '{}')
+returns jsonb language sql as $$
+  select jsonb_build_object(
+    'company_id', (select id from public.companies where slug = p_company),
+    'role_title', p_role, 'opportunity_type', 'internship', 'hiring_mode', 'on_campus',
+    'department_id', 'cse', 'graduation_year', 2026, 'interview_month', '2025-08-01',
+    'difficulty', 3, 'outcome', 'selected', 'confirmed_own', true, 'advice', 'Practise daily.',
+    'topics', jsonb_build_array('arrays'),
+    'rounds', jsonb_build_array(jsonb_build_object(
+      'round_type', 'technical', 'mode', 'online', 'difficulty', 3,
+      'description', 'Resume walkthrough followed by two DSA problems with follow-ups.',
+      'questions', jsonb_build_array(jsonb_build_object('body', 'Reverse a linked list in groups of k.', 'kind', 'coding', 'topics', jsonb_build_array('linked-lists')))
+    ))
+  ) || p_extra
+$$;
+
+grant execute on all functions in schema pg_temp to authenticated, anon;

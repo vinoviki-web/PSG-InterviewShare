@@ -1,0 +1,47 @@
+# Runs every test against a throwaway local Supabase stack. No secrets needed.
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with: { version: 3.1.0 }
+
+      - name: Build (prototype and database modes)
+        run: |
+          npm run build
+          VITE_DATA_SOURCE=supabase npx vite build --outDir dist-db
+          ! grep -rqE "Karthik Subramanian|rw-proto-db-v1" dist-db/assets   # no fictional data in production builds
+
+      - name: Start Supabase
+        run: npm run db:start
+      - name: Write local env
+        run: |
+          eval "$(npx supabase status -o env)"
+          printf "VITE_DATA_SOURCE=supabase\nVITE_SUPABASE_URL=%s\nVITE_SUPABASE_ANON_KEY=%s\n" "$API_URL" "$ANON_KEY" > .env.db.local
+
+      - name: Database tests (pgTAP)
+        run: npm run db:test
+      - name: Live integration tests
+        run: |
+          npm run test:auth
+          npm run test:wizard
+          npm run test:browse
+          npm run test:companies
+          npm run test:community
+          npm run test:admin
+      - name: End-to-end and accessibility tests
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-traces, path: test-results, retention-days: 7 }
