@@ -31,7 +31,7 @@
 | Gmail SMTP | About 500 emails per day | We cap Supabase at 20 sign-in emails per hour (≤ 480 a day). Students stay signed in, so most need one code per device. Launch to one class at a time. |
 | Gmail SMTP | Not built for app email | Early codes may land in Spam. Ask testers to mark them *Not spam*. If Google ever restricts the account, sign-in emails stop until it's restored. |
 | Vercel Hobby | Non-commercial personal use only; 100 GB transfer/month; 100 deployments/day | Fits: no ads, payments or sponsorship. The site is static, so transfer is tiny. |
-| GitHub (private repo) | 2,000 Actions minutes/month | One full test run takes about 4 minutes. Plenty. |
+| GitHub (public repo) | Actions minutes are free for public repositories | Tests and backups cost nothing. Scheduled backups pause after 60 days without commits (see step 1). |
 
 ## What changed in this phase
 
@@ -64,10 +64,12 @@
 
 ## The ₹0 runbook
 
-### Step 1 🧑 · Make the GitHub repository private (recommended)
-GitHub → `vinoviki-web/PSG-InterviewShare` → **Settings** → bottom of *General* → **Danger Zone** → **Change repository visibility** → **Private**.
-- Why: backup files (encrypted, but containing student emails) are downloadable by anyone signed in to GitHub on a public repository, and GitHub switches off scheduled backups on public repositories after 60 days without commits.
-- Card: no. **Check:** the repository shows a *Private* label.
+### Step 1 ✅ · GitHub repository stays public (owner decision, LA12)
+The code is open source; nothing secret is in it, and every rule is enforced by the database. Consequences we accept:
+- **Backups:** anyone signed in to GitHub can download the weekly backup files. They are encrypted with AES-256, so they are unreadable without `BACKUP_PASSPHRASE`. Use a long random passphrase (at least 6 random words or 24 random characters) and never share it.
+- **Scheduled backups pause after 60 days without commits.** GitHub emails a warning first; re-enable it from **Actions → Weekly backup → Enable workflow**.
+- **Tests on pull requests from strangers** run without any secrets, so they can't reach production.
+- The demo admin address `22e646@psgtech.ac.in` appears in the local seed and docs.
 
 ### Step 2 🧑 · Gmail account for sign-in emails
 1. Create a new Google account just for this project (for example a name containing "interviewshare"). Use your own phone number for verification.
@@ -167,7 +169,7 @@ npx supabase secrets set ALLOWED_ORIGINS=https://<your-project>.vercel.app   # p
 | When | What |
 |---|---|
 | Nightly (automatic) | Housekeeping job; runs that changed something appear in the audit log as *System · system.maintenance* |
-| Weekly (automatic) | Encrypted backup. Download one a month to Google Drive. |
+| Weekly (automatic) | Encrypted backup. Download one a month to Google Drive. If GitHub says the schedule was disabled after 60 quiet days, re-enable it. |
 | Every change | GitHub tests must pass. Database changes go in a new migration, then `npx supabase db push`. |
 | After a quiet week | If Supabase paused the project, click **Restore** in the dashboard. |
 | Each semester | Review moderators, check the department list, run a restore drill |

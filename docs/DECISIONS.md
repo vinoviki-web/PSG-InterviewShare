@@ -143,6 +143,7 @@ Details: [10-launch.md](10-launch.md)
 | LA9 | Access rules evaluate `auth.uid()` and role helpers once per query (`(select …)`), admin write rules are split per action, and every foreign key is indexed (migration 0920, from Supabase's advisor). The 3 security-definer views stay by design (masking, D7) and are covered by test 12. |
 | LA10 | **₹0 hosting** (owner decision, 2026-11-14): Supabase Free (Mumbai), Vercel Hobby on the free `vercel.app` address, no custom domain, no paid add-ons or AI APIs. Sign-in codes go through a dedicated Gmail account over SMTP (app password), capped at 20 emails/hour, because free transactional providers need a verified domain. Backups are the weekly encrypted GitHub workflow. No upgrade without the owner's explicit approval. |
 | LA11 | **Independent student project** (owner decision): name *PSG InterviewShare*; no PSG logo or claim of endorsement; "independent student project, not affiliated with or endorsed by PSG College of Technology" on every page, About, Terms and the sign-in email. Official branding only after placement-cell permission (A2). |
+| LA12 | The GitHub repository stays **public** (owner decision, 2026-11-14). Accepted: encrypted backup artifacts are downloadable by signed-in GitHub users (unreadable without the passphrase), scheduled backups pause after 60 days without commits, and the demo admin address is visible. No secrets are in the repository; pull-request test runs get no secrets. |
 
 ## Open questions (❓)
 | ID | Question | Recommendation |
