@@ -346,6 +346,7 @@ function RoundDifficultyClear({ index }) {
 
 function QuestionList({ roundIndex, roundId, roundError, announce }) {
   const { getValues } = useFormContext()
+  const domain = useWatch({ name: 'domain_id' })
   const name = `rounds.${roundIndex}.questions`
   const { fields, append, remove, move, insert } = useFieldArray({ name, keyName: '_key' })
   const toast = useToast()

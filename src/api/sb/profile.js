@@ -17,6 +17,15 @@ const EDITABLE = {
   default_anonymous: 'default_anonymous', default_hide_department: 'default_hide_department',
 }
 
+/* Decode a data: URL in memory. fetch(dataUrl) would be blocked by the
+   production CSP (connect-src has no data:), so never use it here. */
+function dataUrlToBlob(dataUrl) {
+  const [head, body = ''] = String(dataUrl).split(',', 2)
+  const type = /^data:([^;,]+)/.exec(head)?.[1] ?? 'application/octet-stream'
+  const text = head.includes(';base64') ? atob(body) : decodeURIComponent(body)
+  return new Blob([Uint8Array.from(text, (c) => c.charCodeAt(0))], { type })
+}
+
 /**
  * Avatar: the UI hands us a resized webp data URL (or null to remove).
  * Stored at avatars/{uid}/avatar-{timestamp}.webp; older files are removed.
@@ -25,7 +34,7 @@ async function syncAvatar(userId, dataUrl) {
   const { data: existing } = await supabase.storage.from('avatars').list(userId)
   let path = null
   if (dataUrl) {
-    const blob = await (await fetch(dataUrl)).blob()
+    const blob = dataUrlToBlob(dataUrl)
     path = `${userId}/avatar-${Date.now()}.webp`
     const { error } = await supabase.storage.from('avatars').upload(path, blob, { contentType: 'image/webp', upsert: false })
     if (error) throw new ApiError('Couldn’t upload your photo. Use a PNG, JPEG or WebP under 2 MB.', { code: 'upload_failed' })
