@@ -1,4 +1,11 @@
 import { Link } from 'react-router'
+import { OWNER } from '@/lib/constants'
+
+const ownerMail = (
+  <a href={`mailto:${OWNER.email}`} className="whitespace-nowrap font-medium text-teal-700 underline-offset-2 hover:underline">
+    {OWNER.email}
+  </a>
+)
 
 const PAGES = {
   about: {
@@ -8,7 +15,8 @@ const PAGES = {
       ['Why it exists', 'Every placement season, the same questions get asked in class groups: what does this company ask, how many rounds, how hard is it? The answers live in scattered chats and disappear every year. PSG InterviewShare keeps them, structured by company, round and topic, so each batch starts where the last one left off.'],
       ['Who runs it', 'PSG InterviewShare is an independent project, built and moderated by PSG Tech students. It is not affiliated with, endorsed by or run by PSG College of Technology or its placement cell, and it doesn’t use the college’s name or logo officially. “PSG” only describes who it is for. Nothing on it is official company information unless it’s explicitly labelled with a source.'],
       ['How moderation works', 'Anyone can report an experience or comment. Content reported by three different students is hidden automatically until a student moderator reviews it. Every moderation and admin action is recorded in an audit log.'],
-      ['Contact', 'Questions, corrections or takedown requests: use “Report” on the content, or reach the admins through the Guidelines page. A dedicated contact address will be published before launch.'],
+      ['Who built it', <>PSG InterviewShare was created and is maintained by <strong className="font-semibold text-ink-900">{OWNER.name}</strong>, {OWNER.programme}, PSG College of Technology.</>],
+      ['Contact', <>Questions, corrections or takedown requests: use “Report” on the content, or email {ownerMail}.</>],
     ],
   },
   guidelines: {
@@ -58,7 +66,7 @@ export default function StaticPage({ page }) {
           ))}
         </div>
         <p className="mt-12 border-t border-ink-200 pt-6 text-small text-ink-500">
-          Draft text for the prototype. Final wording will be reviewed before launch. <Link to="/" className="font-medium text-ink-700 hover:underline">Back to home</Link>
+          <Link to="/" className="font-medium text-ink-700 hover:underline">Back to home</Link>
         </p>
       </article>
     </div>

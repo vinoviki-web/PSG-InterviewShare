@@ -5,6 +5,7 @@ import {
   House, Compass, Building2, Bookmark, UserRound, Plus, Search, Settings, LogOut, ShieldCheck, Gauge, FileText, Info, X, TriangleAlert,
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
+import { OwnerCredit } from '@/components/OwnerCredit'
 import { Avatar, Button, IconButton, Kbd, Menu, MenuTrigger, MenuContent, MenuItem, MenuSeparator, MenuLabel, Skeleton, useToast } from '@/components/ui'
 import { CommandPalette } from '@/components/CommandPalette'
 import { useAuth } from '@/hooks/useAuth'
@@ -126,7 +127,10 @@ function TopNav({ onSearch }) {
 function AppFooter() {
   return (
     <footer className="container-page mt-12 flex flex-col gap-2 border-t border-ink-200 pt-6 text-caption text-ink-500 sm:flex-row sm:items-center sm:justify-between">
-      <p>An independent student project. Not affiliated with or endorsed by PSG College of Technology.</p>
+      <div className="space-y-1">
+        <p>An independent student project. Not affiliated with or endorsed by PSG College of Technology.</p>
+        <OwnerCredit />
+      </div>
       <nav className="flex flex-wrap gap-x-4 gap-y-1" aria-label="Footer">
         <Link to="/about" className="hover:text-ink-900">About</Link>
         <Link to="/guidelines" className="hover:text-ink-900">Guidelines</Link>

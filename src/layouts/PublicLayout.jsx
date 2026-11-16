@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet, ScrollRestoration } from 'react-router'
 import { Logo } from '@/components/Logo'
+import { OwnerCredit } from '@/components/OwnerCredit'
 import { Button } from '@/components/ui'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
@@ -27,7 +28,10 @@ export function PublicFooter() {
   return (
     <footer className="border-t border-ink-200 bg-white">
       <div className="container-page flex flex-col gap-4 py-8 text-small text-ink-500 sm:flex-row sm:items-center sm:justify-between">
-        <p>Built by PSG students, for PSG students. An independent project, not affiliated with or endorsed by PSG College of Technology.</p>
+        <div className="space-y-1.5">
+          <p>Built by PSG students, for PSG students. An independent project, not affiliated with or endorsed by PSG College of Technology.</p>
+          <OwnerCredit />
+        </div>
         <nav className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Footer">
           <Link to="/about" className="hover:text-ink-900">About</Link>
           <Link to="/guidelines" className="hover:text-ink-900">Guidelines</Link>

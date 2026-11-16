@@ -5,6 +5,13 @@ import {
 export const APP_NAME = 'PSG InterviewShare'
 export const PSG_DOMAIN = 'psgtech.ac.in'
 
+/* Who built and runs the site (shown in footers and on About). */
+export const OWNER = {
+  name: 'VINOTHKUMAR N K K',
+  email: 'vinoviki2004@gmail.com',
+  programme: 'B.E. in Electrical and Electronics Engineering (Sandwich), 2022–2027',
+}
+
 /* Mirrors the Postgres enums planned for Phase 3. Keep in sync. */
 export const OPPORTUNITY_TYPES = [
   { value: 'internship', label: 'Internship', short: 'Internship' },
